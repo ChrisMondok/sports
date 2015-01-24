@@ -3,9 +3,21 @@ function Game(domNode) {
 	this.chooseAGame();
 	this.players = [];
 	this.gym = new Gymnasium(this);
+
+	this.scores = [{}, {}];
+
+	gameTypes.forEach(function(gameType) {
+		this.scores[0][gameType] = 0;
+		this.scores[1][gameType] = 0;
+	}, this);
 }
 
-var gameTypes = ['ultimateFlyingDisc', 'dodgeball'];
+Game.prototype.score = function(team) {
+	console.info("Team %s got a point in %s", team, this.gameType);
+	this.scores[team][this.gameType]++;
+}
+
+var gameTypes = ['Ultimate Flying Disc', 'Dodgeball'];
 
 Game.prototype.createEngine = function(domNode) {
 	var gameWidth = 1366;
@@ -93,9 +105,16 @@ Game.prototype.onCollisionActive = function(collisionEvent) {
 Game.prototype.chooseAGame = function() {
 	var i = Math.floor(Math.random() * gameTypes.length);
 	this.gameType = gameTypes[i];
-	console.log("Now playing %s", this.gameType);
+	var soundName = this.gameType.replace(/ /g,'').toLowerCase();
+	this.playSound(soundName);
 };
 
 Game.prototype.getWorld = function() {
 	return this.engine.world;
 };
+
+Game.prototype.playSound = function(sound) {
+	var audio = document.querySelector('audio[data-sound='+sound+']');
+	if(audio)
+		audio.play();
+}

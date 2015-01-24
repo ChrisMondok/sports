@@ -79,12 +79,29 @@ Player.prototype.handleFlickInput = function(gamepad, tickEvent) {
 
 		var direction = Math.atan2(joyY, joyX);
 
-		if(this.possession)
+		if(this.canThrow())
 			this.throw(strength, direction);
 
 		this.flickStart = undefined;
 	}
 };
+
+Player.prototype.canThrow = function() {
+	if(!this.possession)
+		return false;
+
+	if(this.game.gameType == 'Dodgeball' && !this.isOnOwnHalfOfField()) {
+		console.log("Can't throw, on wrong side");
+		return false;
+	}
+
+	return true;
+};
+
+Player.prototype.isOnOwnHalfOfField = function() {
+	var half = Math.floor(this.body.position.x / (this.game.getWorld().bounds.max.x / 2));
+	return half == this.team;
+}
 
 Player.prototype.flick = function() {
 	if(this.possession) {
@@ -93,40 +110,23 @@ Player.prototype.flick = function() {
 };
 
 Player.prototype.canWalk = function() {
-	if(game.gameType == 'ultimateFlyingDisc' && this.possession)
+	if(game.gameType == 'Ultimate Flying Disc' && this.possession)
 		return false;
 
 	return true;
 };
 
 Player.prototype.handleCollision = function(otherThing) {
-	if(otherThing instanceof Ball) {
-		if(this.game.gameType == 'dodgeball' && otherThing instanceof Dodgeball && !otherThing.canGrab())
-			otherThing.lastThrownBy.scorePoint();
-		if(otherThing.canGrab() && this.canAndShouldGrabBall(otherThing))
-			this.grab(otherThing);
-	}
-};
-
-Player.prototype.scorePoint = function() {
-	console.log("Player on team %s scored a point.", this.team);
+	if(otherThing instanceof Ball && this.canAndShouldGrabBall(otherThing))
+		this.grab(otherThing);
 };
 
 Player.prototype.canAndShouldGrabBall = function(ball) {
-	if(this.possession) {
-		return false;
-	}
-	if(!ball.canGrab()) {
-		return false;
-	}
-
-	return true;
-}
+	return !this.possession && ball.canGrab();
+};
 
 Player.prototype.grab = function(ball) {
 	ball.possessor = this;
-
-	window.P = this;
 
 	ball.body.groupId = this.body.groupId;
 
@@ -135,14 +135,6 @@ Player.prototype.grab = function(ball) {
 	this.possession = Matter.Constraint.create({
 		bodyA: this.body,
 		bodyB: ball.body,
-//		pointA: {
-//			x: 0,
-//			y: -(this.radius + ball.radius)
-//		},
-//		pointB: {
-//			x: 0,
-//			y: 0
-//		},
 		stiffness: 1,
 		render: {
 			lineWidth: 5,
@@ -179,6 +171,9 @@ Player.prototype.throw = function(strength, direction) {
 	Matter.Body.applyForce(ball.body, ball.body.position, {x: x, y: y});
 
 	ball.lastThrownBy = this;
+
+	var sound = "throw-"+Math.floor(strength * 2);
+	this.game.playSound(sound);
 };
 
 Player.prototype.translateBallOutsideOfPlayer = function(ball, direction) {
