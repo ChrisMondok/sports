@@ -32,24 +32,9 @@ FlyingDisc.extends(Ball);
 FlyingDisc.prototype.bodyOptions = {restitution: 0};
 
 FlyingDisc.prototype.canGrab = function() {
-	return this.game.gameType == 'ultimateFlyingDisc' && !this.possessor;
+	return this.game.gameType == 'Ultimate Flying Disc' && !this.possessor;
 };
 
 FlyingDisc.prototype.tick = function(tickEvent) {
 	this.body.frictionAir = (this.body.speed > 5 ? 0.005 : 0.1);
-};
-
-function Dodgeball() {
-	Ball.apply(this, arguments);
-};
-
-Dodgeball.extends(Ball);
-
-Dodgeball.prototype.bodyOptions = {restitution: 0.2, friction: 1};
-
-Dodgeball.prototype.tick = function() {
-}
-
-Dodgeball.prototype.canGrab = function() {
-	return this.game.gameType == 'dodgeball' && this.possessor == null && this.body.speed < 5;
 };

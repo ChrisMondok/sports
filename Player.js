@@ -93,35 +93,20 @@ Player.prototype.flick = function() {
 };
 
 Player.prototype.canWalk = function() {
-	if(game.gameType == 'ultimateFlyingDisc' && this.possession)
+	if(game.gameType == 'Ultimate Flying Disc' && this.possession)
 		return false;
 
 	return true;
 };
 
 Player.prototype.handleCollision = function(otherThing) {
-	if(otherThing instanceof Ball) {
-		if(this.game.gameType == 'dodgeball' && otherThing instanceof Dodgeball && !otherThing.canGrab())
-			otherThing.lastThrownBy.scorePoint();
-		if(otherThing.canGrab() && this.canAndShouldGrabBall(otherThing))
-			this.grab(otherThing);
-	}
-};
-
-Player.prototype.scorePoint = function() {
-	console.log("Player on team %s scored a point.", this.team);
+	if(otherThing instanceof Ball && this.canAndShouldGrabBall(otherThing))
+		this.grab(otherThing);
 };
 
 Player.prototype.canAndShouldGrabBall = function(ball) {
-	if(this.possession) {
-		return false;
-	}
-	if(!ball.canGrab()) {
-		return false;
-	}
-
-	return true;
-}
+	return !this.possession && ball.canGrab();
+};
 
 Player.prototype.grab = function(ball) {
 	ball.possessor = this;
@@ -135,14 +120,6 @@ Player.prototype.grab = function(ball) {
 	this.possession = Matter.Constraint.create({
 		bodyA: this.body,
 		bodyB: ball.body,
-//		pointA: {
-//			x: 0,
-//			y: -(this.radius + ball.radius)
-//		},
-//		pointB: {
-//			x: 0,
-//			y: 0
-//		},
 		stiffness: 1,
 		render: {
 			lineWidth: 5,

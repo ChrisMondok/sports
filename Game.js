@@ -3,9 +3,21 @@ function Game(domNode) {
 	this.chooseAGame();
 	this.players = [];
 	this.gym = new Gymnasium(this);
+
+	this.scores = [{}, {}];
+
+	gameTypes.forEach(function(gameType) {
+		this.scores[0][gameType] = 0;
+		this.scores[1][gameType] = 0;
+	}, this);
 }
 
-var gameTypes = ['ultimateFlyingDisc', 'dodgeball'];
+Game.prototype.score = function(team) {
+	console.info("Team %s got a point in %s", team, this.gameType);
+	this.scores[team][this.gameType]++;
+}
+
+var gameTypes = ['Ultimate Flying Disc', 'Dodgeball'];
 
 Game.prototype.createEngine = function(domNode) {
 	var gameWidth = 1366;
