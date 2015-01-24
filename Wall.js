@@ -1,8 +1,8 @@
-function Wall(world, x, y, width, height) {
+function Wall(game, x, y, width, height) {
 	this._super.apply(this, arguments);
 
 	this.body = this.createBody(x, y, width, height);
-	Matter.World.add(world, this.body);
+	Matter.World.add(game.getWorld(), this.body);
 }
 
 Wall.extends(Pawn);

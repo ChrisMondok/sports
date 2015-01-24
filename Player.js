@@ -1,9 +1,9 @@
-function Player(world) {
+function Player(game) {
 	this._super.apply(this, arguments);
 
-	this.body = this.createBody(world);
+	this.body = this.createBody();
 
-	Matter.World.add(world, this.body); 
+	Matter.World.add(game.getWorld(), this.body); 
 }
 
 Player.extends(Pawn);
@@ -15,7 +15,7 @@ Player.prototype.yAxis = 1;
 
 Player.prototype.deadZone = 0.2;
 
-Player.prototype.createBody = function(world) {
+Player.prototype.createBody = function() {
 	var x = 200;
 	var y = 200;
 	var body = Matter.Bodies.circle(x, y, 10, {frictionAir: 0.2});

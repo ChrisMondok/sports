@@ -2,7 +2,7 @@ function Game(domNode) {
 	this.engine = this.createEngine(domNode);
 	this.gameType =	this.chooseAGame();
 	this.players = [];
-	this.gym = new Gymnasium(this.engine.world);
+	this.gym = new Gymnasium(this);
 }
 
 var gameTypes = ['ultimateFlyingDisc', 'dodgeball'];
@@ -32,7 +32,7 @@ Game.prototype.pollGamepads = function() {
 	{
 		if(gamepads[i]) {
 			if(!this.players[i])
-				this.players[i] = new Player(this.engine.world);
+				this.players[i] = new Player(this);
 
 			this.players[i].handleInput(gamepads[i]);
 		}
@@ -51,4 +51,8 @@ Game.prototype.onCollisionActive = function(collisionEvent) {
 Game.prototype.chooseAGame = function() {
 	var i = Math.floor(Math.random() * gameTypes.length);
 	return gameTypes[i];
+};
+
+Game.prototype.getWorld = function() {
+	return this.engine.world;
 };

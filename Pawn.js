@@ -1,5 +1,5 @@
-function Pawn(world, x, y) {
-	//will we need this?
+function Pawn(game, x, y) {
+	this.game = game;
 }
 
 Pawn.prototype.handleCollision = function(iDontKnowYet) {

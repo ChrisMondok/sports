@@ -1,8 +1,8 @@
-function Ball(world, x, y, radius) {
+function Ball(game, x, y, radius) {
 	this._super.apply(this, arguments);
 
 	this.body = this.createBody(x, y, radius);
-	Matter.World.add(world, this.body);
+	Matter.World.add(game.getWorld(), this.body);
 }
 
 Ball.extends(Pawn);
