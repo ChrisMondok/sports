@@ -10,6 +10,8 @@ var gameTypes = ['ultimateFlyingDisc', 'dodgeball'];
 Game.prototype.createEngine = function(domNode) {
 	var engine = Matter.Engine.create(domNode);
 
+	engine.render.options.showAngleIndicator = true;
+
 	engine.world.gravity.x = engine.world.gravity.y = 0;
 
 	Matter.Engine.run(engine);
@@ -31,8 +33,10 @@ Game.prototype.pollGamepads = function() {
 	for(var i = 0; i < gamepads.length; i++)
 	{
 		if(gamepads[i]) {
-			if(!this.players[i])
+			if(!this.players[i]) {
 				this.players[i] = new Player(this);
+				this.players[i].body.groupId = i + 1;
+			}
 
 			this.players[i].handleInput(gamepads[i]);
 		}
@@ -40,11 +44,11 @@ Game.prototype.pollGamepads = function() {
 };
 
 Game.prototype.onCollisionActive = function(collisionEvent) {
-	collisionEvent.pairs.forEach(function(pair) {
-		if(pair.bodyA.pawn && pair.bodyB.pawn) {
-			pair.bodyA.pawn.handleCollision(pair.bodyB.pawn);
-			pair.bodyB.pawn.handleCollision(pair.bodyA.pawn);
-		}
+	collisionEvent.pairs.filter(function(pair) {
+		return pair.bodyA.pawn && pair.bodyB.pawn;
+	}).forEach(function(pair) {
+		pair.bodyA.pawn.handleCollision(pair.bodyB.pawn);
+		pair.bodyB.pawn.handleCollision(pair.bodyA.pawn);
 	});
 };
 
@@ -55,13 +59,4 @@ Game.prototype.chooseAGame = function() {
 
 Game.prototype.getWorld = function() {
 	return this.engine.world;
-};
-
-Game.prototype.entityIsActive = function(entity) {
-	switch(this.gameType) {
-		case 'ultimateFlyingDisc':
-			return entity instanceof FlyingDisc;
-		case 'dodgeball':
-			return entity instanceof Dodgeball;
-	}
 };

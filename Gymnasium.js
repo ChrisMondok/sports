@@ -62,9 +62,9 @@ Gymnasium.prototype.createSportItems = function(game) {
 	
 	//Dodgeballs
 	for (ballCounter = 0; ballCounter < this.totalDodgeBalls; ballCounter++) {
-		new Dodgeball(game, (world.bounds.min.x + this.wallThickness + this.dodgeBallSize) * (ballCounter + 1), world.bounds.min.y + this.wallThickness, this.dodgeBallSize);
+		new Dodgeball(game, (world.bounds.min.x + this.wallThickness + Dodgeball.prototype.radius) * (ballCounter + 1), world.bounds.min.y + this.wallThickness);
 	}
 	
 	//FlyingDisc
-	new FlyingDisc(game, centerX, gymHeight - this.wallThickness - this.frisbeeSize, this.frisbeeSize);
+	new FlyingDisc(game, centerX, gymHeight - this.wallThickness - FlyingDisc.prototype.radius);
 };
