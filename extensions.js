@@ -14,3 +14,5 @@ Function.prototype.extends = function(base) {
 		}
 	});
 };
+
+navigator.getGamepads = navigator.getGamepads || navigator.webkitGetGamepads;
