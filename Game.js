@@ -56,3 +56,12 @@ Game.prototype.chooseAGame = function() {
 Game.prototype.getWorld = function() {
 	return this.engine.world;
 };
+
+Game.prototype.entityIsActive = function(entity) {
+	switch(this.gameType) {
+		case 'ultimateFlyingDisc':
+			return entity instanceof FlyingDisc;
+		case 'dodgeball':
+			return entity instanceof Dodgeball;
+	}
+};

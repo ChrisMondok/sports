@@ -1,5 +1,5 @@
 function Gymnasium(game) {
-	this._super.apply(this, arguments);
+	Pawn.apply(this, arguments);
 	this.walls = this.createWalls(game);
 	this.goals = this.createGoals(game);
 	this.sportItems = this.createSportItems(game);
@@ -62,9 +62,9 @@ Gymnasium.prototype.createSportItems = function(game) {
 	
 	//Dodgeballs
 	for (ballCounter = 0; ballCounter < this.totalDodgeBalls; ballCounter++) {
-		new Ball(game, (world.bounds.min.x + this.wallThickness + this.dodgeBallSize) * (ballCounter + 1), world.bounds.min.y + this.wallThickness, this.dodgeBallSize);
+		new Dodgeball(game, (world.bounds.min.x + this.wallThickness + this.dodgeBallSize) * (ballCounter + 1), world.bounds.min.y + this.wallThickness, this.dodgeBallSize);
 	}
 	
-	//Frisbee
-	new Ball(game, centerX, gymHeight - this.wallThickness - this.frisbeeSize, this.frisbeeSize);
+	//FlyingDisc
+	new FlyingDisc(game, centerX, gymHeight - this.wallThickness - this.frisbeeSize, this.frisbeeSize);
 };

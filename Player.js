@@ -1,5 +1,5 @@
 function Player(game) {
-	this._super.apply(this, arguments);
+	Pawn.apply(this, arguments);
 
 	this.body = this.createBody();
 
@@ -42,6 +42,11 @@ Player.prototype.handleInput = function(gamepad) {
 		Matter.Body.rotate(this.body, -this.body.angle + Math.atan2(y, x));
 };
 
-Player.prototype.handleCollision = function() {
-	console.log("Player collided with something");
+Player.prototype.handleCollision = function(otherThing) {
+	if(otherThing instanceof Ball) {
+		if(this.game.entityIsActive(otherThing))
+			console.log("Collided with something that is active");
+		else
+			console.log("Collided with something that is not active");
+	}
 }

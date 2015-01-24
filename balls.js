@@ -1,5 +1,5 @@
 function Ball(game, x, y, radius) {
-	this._super.apply(this, arguments);
+	Pawn.apply(this, arguments);
 
 	this.body = this.createBody(x, y, radius);
 	Matter.World.add(game.getWorld(), this.body);
@@ -12,3 +12,15 @@ Ball.prototype.createBody = function(x, y, radius) {
 	body.pawn = this;
 	return body;
 }
+
+function FlyingDisc() {
+	Ball.apply(this, arguments);
+}
+
+FlyingDisc.extends(Ball);
+
+function Dodgeball() {
+	Ball.apply(this, arguments);
+}
+
+Dodgeball.extends(Ball);
