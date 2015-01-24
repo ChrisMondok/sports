@@ -105,9 +105,16 @@ Game.prototype.onCollisionActive = function(collisionEvent) {
 Game.prototype.chooseAGame = function() {
 	var i = Math.floor(Math.random() * gameTypes.length);
 	this.gameType = gameTypes[i];
-	console.log("Now playing %s", this.gameType);
+	var soundName = this.gameType.replace(/ /g,'').toLowerCase();
+	this.playSound(soundName);
 };
 
 Game.prototype.getWorld = function() {
 	return this.engine.world;
 };
+
+Game.prototype.playSound = function(sound) {
+	var audio = document.querySelector('audio[data-sound='+sound+']');
+	if(audio)
+		audio.play();
+}

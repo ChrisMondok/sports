@@ -79,12 +79,29 @@ Player.prototype.handleFlickInput = function(gamepad, tickEvent) {
 
 		var direction = Math.atan2(joyY, joyX);
 
-		if(this.possession)
+		if(this.canThrow())
 			this.throw(strength, direction);
 
 		this.flickStart = undefined;
 	}
 };
+
+Player.prototype.canThrow = function() {
+	if(!this.possession)
+		return false;
+
+	if(this.game.gameType == 'Dodgeball' && !this.isOnOwnHalfOfField()) {
+		console.log("Can't throw, on wrong side");
+		return false;
+	}
+
+	return true;
+};
+
+Player.prototype.isOnOwnHalfOfField = function() {
+	var half = Math.floor(this.body.position.x / (this.game.getWorld().bounds.max.x / 2));
+	return half == this.team;
+}
 
 Player.prototype.flick = function() {
 	if(this.possession) {
@@ -156,6 +173,9 @@ Player.prototype.throw = function(strength, direction) {
 	Matter.Body.applyForce(ball.body, ball.body.position, {x: x, y: y});
 
 	ball.lastThrownBy = this;
+
+	var sound = "throw-"+Math.floor(strength * 2);
+	this.game.playSound(sound);
 };
 
 Player.prototype.translateBallOutsideOfPlayer = function(ball, direction) {
