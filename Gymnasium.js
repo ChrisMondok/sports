@@ -2,7 +2,8 @@ function Gymnasium(game) {
 	Pawn.apply(this, arguments);
 	this.walls = this.createWalls(game);
 	this.goals = this.createGoals(game);
-	this.sportItems = this.createSportItems(game);
+	this.createDodgeballs();
+	this.createFlyingDisc();
 }
 
 Gymnasium.extends(Pawn);
@@ -19,6 +20,22 @@ Gymnasium.prototype.dodgeBallSize = 7;
 Gymnasium.prototype.hockeyPuckSize = 5;
 Gymnasium.prototype.tennisBallSize = 5;
 Gymnasium.prototype.frisbeeSize = 7;
+
+Gymnasium.prototype.getEndZone = function(pawn) {
+	if(pawn.body.position.x < this.goalWidth + this.goalBuffer + this.wallThickness)
+		return 0;
+	if(pawn.body.position.x > this.game.getWorld().bounds.max.x - this.goalBuffer - this.goalWidth - this.wallThickness)
+		return 1;
+
+	return null;
+}
+Gymnasium.prototype.isInLeftEndZone = function(pawn) {
+	return pawn.body.position.x < this.goalWidth + this.goalBuffer + this.wallThickness;
+}
+
+Gymnasium.prototype.isInRightEndZone = function(pawn) {
+	 pawn.body.position.x > this.game.world.bounds.max.x - this.goalBuffer - this.goalWidth - this.wallThickness;
+}
 
 Gymnasium.prototype.createWalls = function(game) {
 	var world = game.getWorld();
@@ -51,8 +68,8 @@ Gymnasium.prototype.createGoals = function(game) {
 	];
 };
 
-Gymnasium.prototype.createSportItems = function(game) {
-	var world = game.getWorld();
+Gymnasium.prototype.createDodgeballs = function() {
+	var world = this.game.getWorld();
 
 	var gymWidth = world.bounds.max.x - world.bounds.min.x;
 	var gymHeight = world.bounds.max.y - world.bounds.min.y;
@@ -62,9 +79,13 @@ Gymnasium.prototype.createSportItems = function(game) {
 	
 	//Dodgeballs
 	for (ballCounter = 0; ballCounter < this.totalDodgeBalls; ballCounter++) {
-		new Dodgeball(game, (world.bounds.min.x + this.wallThickness + Dodgeball.prototype.radius) * (ballCounter + 1), world.bounds.min.y + this.wallThickness);
+		new Dodgeball(this.game, (world.bounds.min.x + this.wallThickness + Dodgeball.prototype.radius) * (ballCounter + 1), world.bounds.min.y + this.wallThickness);
 	}
-	
-	//FlyingDisc
-	new FlyingDisc(game, centerX, gymHeight - this.wallThickness - FlyingDisc.prototype.radius);
+};
+
+Gymnasium.prototype.createFlyingDisc = function() {
+	var world = this.game.getWorld();
+	var gymHeight = world.bounds.max.y - world.bounds.min.y;
+	var centerX = (world.bounds.max.x + world.bounds.min.x)/2;
+	new FlyingDisc(this.game, centerX, gymHeight - this.wallThickness - FlyingDisc.prototype.radius);
 };

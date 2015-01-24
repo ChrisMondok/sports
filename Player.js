@@ -128,8 +128,6 @@ Player.prototype.canAndShouldGrabBall = function(ball) {
 Player.prototype.grab = function(ball) {
 	ball.possessor = this;
 
-	window.P = this;
-
 	ball.body.groupId = this.body.groupId;
 
 	this.translateBallOutsideOfPlayer(ball, this.body.angle);
