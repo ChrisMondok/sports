@@ -13,12 +13,14 @@ Player.prototype.walkSpeed = 0.0015;
 Player.prototype.xAxis = 0;
 Player.prototype.yAxis = 1;
 
-Player.prototype.deadZone = 0.1;
+Player.prototype.deadZone = 0.2;
 
 Player.prototype.createBody = function(world) {
 	var x = 200;
 	var y = 200;
-	return Matter.Bodies.circle(x, y, 10, {frictionAir: 0.2});
+	var body = Matter.Bodies.circle(x, y, 10, {frictionAir: 0.2});
+	body.pawn = this;
+	return body;
 }
 
 Player.prototype.handleInput = function(gamepad) {
@@ -36,4 +38,10 @@ Player.prototype.handleInput = function(gamepad) {
 	var y = joyY * this.walkSpeed;
 
 	Matter.Body.applyForce(this.body, this.body.position, {x: x, y: y});
+	if(x || y)
+		Matter.Body.rotate(this.body, -this.body.angle + Math.atan2(y, x));
 };
+
+Player.prototype.handleCollision = function() {
+	console.log("Player collided with something");
+}

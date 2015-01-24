@@ -21,6 +21,16 @@ window.addEventListener('load', function() {
 		pollGamepads();
 	});
 
+	Matter.Events.on(engine, 'collisionActive', function(collisionEvent) {
+		collisionEvent.pairs.forEach(function(pair) {
+			if(pair.bodyA.pawn && pair.bodyB.pawn) {
+				pair.bodyA.pawn.handleCollision(pair.bodyB.pawn);
+				pair.bodyB.pawn.handleCollision(pair.bodyA.pawn);
+			}
+		});
+	});
+
+
 	function pollGamepads() {
 		var gamepads = navigator.getGamepads();
 		

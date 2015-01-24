@@ -8,5 +8,7 @@ function Ball(world, x, y, radius) {
 Ball.extends(Pawn);
 
 Ball.prototype.createBody = function(x, y, radius) {
-	return Matter.Bodies.circle(x, y, radius);
+	var body = Matter.Bodies.circle(x, y, radius);
+	body.pawn = this;
+	return body;
 }
