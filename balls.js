@@ -3,6 +3,8 @@ function Ball(game, x, y) {
 
 	this.body = this.createBody(x, y);
 	Matter.World.add(game.getWorld(), this.body);
+
+	this.lastThrownBy = null;
 }
 
 Ball.extends(Pawn);
@@ -45,6 +47,9 @@ Dodgeball.extends(Ball);
 
 Dodgeball.prototype.bodyOptions = {restitution: 0.2, friction: 1};
 
+Dodgeball.prototype.tick = function() {
+}
+
 Dodgeball.prototype.canGrab = function() {
-	return this.game.gameType == 'dodgeball' && this.possessor == null;
+	return this.game.gameType == 'dodgeball' && this.possessor == null && this.body.speed < 5;
 };

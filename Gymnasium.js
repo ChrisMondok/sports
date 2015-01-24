@@ -30,10 +30,10 @@ Gymnasium.prototype.createWalls = function(game) {
 	var centerY = (world.bounds.max.y + world.bounds.min.y)/2;
 
 	return [
-		new Wall(game, centerX, this.wallThickness/2, gymWidth, this.wallThickness), //top,
-		new Wall(game, world.bounds.max.x - this.wallThickness/2, centerY, this.wallThickness, gymHeight), //right
-		new Wall(game, centerX, world.bounds.max.y - this.wallThickness/2, gymWidth, this.wallThickness), //bottom,
-		new Wall(game, this.wallThickness/2, centerY, this.wallThickness, gymHeight) //left
+		new Wall(game, centerX, - 100 + this.wallThickness, gymWidth, 200), //top,
+		new Wall(game, world.bounds.max.x + 100 - this.wallThickness, centerY, 200, gymHeight), //right
+		new Wall(game, centerX, world.bounds.max.y + 100 - this.wallThickness, gymWidth, 200), //bottom,
+		new Wall(game, - 100 + this.wallThickness, centerY, 200, gymHeight) //left
 	];
 };
 

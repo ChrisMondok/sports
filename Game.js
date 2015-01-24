@@ -16,11 +16,6 @@ Game.prototype.createEngine = function(domNode) {
 		max: { x: gameWidth, y: gameHeight }
 	};
 
-	var worldOptions = {
-		bounds: {
-		}
-	};
-
 	var engine = Matter.Engine.create(domNode, {
 		world: {
 			bounds: gameDimensions
@@ -29,7 +24,8 @@ Game.prototype.createEngine = function(domNode) {
 			bounds: gameDimensions,
 			options: {
 				width: gameWidth,
-				height: gameHeight
+				height: gameHeight,
+				showAngleIndicator: true
 			}
 		}
 	});
@@ -37,9 +33,16 @@ Game.prototype.createEngine = function(domNode) {
 	var canvas = engine.render.canvas;
 
 	canvas.addEventListener('click', function() {
-		canvas.mozRequestFullScreen();
+		if (canvas.requestFullscreen) {
+			canvas.requestFullscreen();
+		} else if (canvas.msRequestFullscreen) {
+			canvas.msRequestFullscreen();
+		} else if (canvas.mozRequestFullScreen) {
+			canvas.mozRequestFullScreen();
+		} else if (canvas.webkitRequestFullscreen) {
+			canvas.webkitRequestFullscreen();
+		}
 	});
-
 
 	engine.render.options.showAngleIndicator = true;
 
@@ -68,8 +71,10 @@ Game.prototype.pollGamepads = function(tickEvent) {
 	for(var i = 0; i < gamepads.length; i++)
 	{
 		if(gamepads[i]) {
-			if(!this.players[i])
-				this.players[i] = new Player(this);
+			if(!this.players[i]) {
+				var player = this.players[i] = new Player(this);
+				player.team = i % 2;
+			}
 
 			this.players[i].handleInput(gamepads[i], tickEvent);
 		}

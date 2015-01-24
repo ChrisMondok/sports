@@ -12,11 +12,6 @@ Player.extends(Pawn);
 
 Player.prototype.walkForce = 0.01;
 
-Player.prototype.xAxis = 0;
-Player.prototype.yAxis = 1;
-Player.prototype.flickXAxis = 3;
-Player.prototype.flickYAxis = 4;
-
 Player.prototype.deadZone = 0.2;
 Player.prototype.flickThreshhold = 0.9;
 
@@ -45,11 +40,11 @@ Player.prototype.handleInput = function(gamepad, tickEvent) {
 };
 
 Player.prototype.handleMovementInput = function(gamepad, tickEvent) {
-	var joyX = gamepad.axes[this.xAxis];
+	var joyX = gamepad.axes[0];
 	if(Math.abs(joyX) < this.deadZone)
 		joyX = 0;
 
-	var joyY = gamepad.axes[this.yAxis];
+	var joyY = gamepad.axes[1];
 	if(Math.abs(joyY) < this.deadZone)
 		joyY = 0;
 
@@ -64,11 +59,15 @@ Player.prototype.handleMovementInput = function(gamepad, tickEvent) {
 };
 
 Player.prototype.handleFlickInput = function(gamepad, tickEvent) {
-	var joyX = gamepad.axes[this.flickXAxis];
+	//TODO: probably something more intelligent than this
+	var flickXAxis = gamepad.axes.length > 4 ? 3 : 2;
+	var flickYAxis = gamepad.axes.length > 4 ? 4 : 3;
+
+	var joyX = gamepad.axes[flickXAxis];
 	if(Math.abs(joyX) < this.deadZone)
 		joyX = 0;
 
-	var joyY = gamepad.axes[this.flickYAxis];
+	var joyY = gamepad.axes[flickYAxis];
 	if(Math.abs(joyY) < this.deadZone)
 		joyY = 0;
 
@@ -101,10 +100,16 @@ Player.prototype.canWalk = function() {
 };
 
 Player.prototype.handleCollision = function(otherThing) {
-	if(otherThing instanceof Ball && otherThing.canGrab()) { //can grab ball
-		if(this.canAndShouldGrabBall(otherThing))
+	if(otherThing instanceof Ball) {
+		if(this.game.gameType == 'dodgeball' && otherThing instanceof Dodgeball && !otherThing.canGrab())
+			otherThing.lastThrownBy.scorePoint();
+		if(otherThing.canGrab() && this.canAndShouldGrabBall(otherThing))
 			this.grab(otherThing);
 	}
+};
+
+Player.prototype.scorePoint = function() {
+	console.log("Player on team %s scored a point.", this.team);
 };
 
 Player.prototype.canAndShouldGrabBall = function(ball) {
@@ -125,17 +130,7 @@ Player.prototype.grab = function(ball) {
 
 	ball.body.groupId = this.body.groupId;
 
-	var desiredBallLocation = {
-		x: this.body.position.x + Math.cos(this.body.angle) * (this.radius + ball.radius),
-		y: this.body.position.y + Math.sin(this.body.angle) * (this.radius + ball.radius)
-	};
-
-	var translation = {
-		x: desiredBallLocation.x - ball.body.position.x,
-		y: desiredBallLocation.y - ball.body.position.y
-	};
-
-	Matter.Body.translate(ball.body, {x: translation.x, y: translation.y});
+	this.translateBallOutsideOfPlayer(ball, this.body.angle);
 
 	this.possession = Matter.Constraint.create({
 		bodyA: this.body,
@@ -182,6 +177,8 @@ Player.prototype.throw = function(strength, direction) {
 	this.translateBallOutsideOfPlayer(ball, direction);
 
 	Matter.Body.applyForce(ball.body, ball.body.position, {x: x, y: y});
+
+	ball.lastThrownBy = this;
 };
 
 Player.prototype.translateBallOutsideOfPlayer = function(ball, direction) {
