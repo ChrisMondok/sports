@@ -11,7 +11,7 @@ Ball.prototype.canGrab = function() { return false; };
 
 Ball.prototype.possessor = null;
 
-Ball.prototype.radius = 5;
+Ball.prototype.radius = 10;
 
 Ball.prototype.bodyOptions = {};
 
@@ -26,8 +26,6 @@ function FlyingDisc() {
 };
 
 FlyingDisc.extends(Ball);
-
-FlyingDisc.prototype.radius = 7;
 
 FlyingDisc.prototype.bodyOptions = {restitution: 0};
 
@@ -45,7 +43,7 @@ function Dodgeball() {
 
 Dodgeball.extends(Ball);
 
-Dodgeball.prototype.radius = 7;
+Dodgeball.prototype.bodyOptions = {restitution: 0.2, friction: 1};
 
 Dodgeball.prototype.canGrab = function() {
 	return this.game.gameType == 'dodgeball' && this.possessor == null;

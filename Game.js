@@ -8,7 +8,38 @@ function Game(domNode) {
 var gameTypes = ['ultimateFlyingDisc', 'dodgeball'];
 
 Game.prototype.createEngine = function(domNode) {
-	var engine = Matter.Engine.create(domNode);
+	var gameWidth = 1366;
+	var gameHeight = 768;
+
+	var gameDimensions =  {
+		min: { x: 0, y: 0},
+		max: { x: gameWidth, y: gameHeight }
+	};
+
+	var worldOptions = {
+		bounds: {
+		}
+	};
+
+	var engine = Matter.Engine.create(domNode, {
+		world: {
+			bounds: gameDimensions
+		},
+		render: {
+			bounds: gameDimensions,
+			options: {
+				width: gameWidth,
+				height: gameHeight
+			}
+		}
+	});
+
+	var canvas = engine.render.canvas;
+
+	canvas.addEventListener('click', function() {
+		canvas.mozRequestFullScreen();
+	});
+
 
 	engine.render.options.showAngleIndicator = true;
 

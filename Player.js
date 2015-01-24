@@ -10,7 +10,7 @@ function Player(game) {
 
 Player.extends(Pawn);
 
-Player.prototype.walkSpeed = 0.0015;
+Player.prototype.walkForce = 0.01;
 
 Player.prototype.xAxis = 0;
 Player.prototype.yAxis = 1;
@@ -22,9 +22,9 @@ Player.prototype.flickThreshhold = 0.9;
 
 Player.prototype.possession = null;
 
-Player.prototype.radius = 10;
+Player.prototype.radius = 25;
 
-Player.prototype.throwForce = 0.005;
+Player.prototype.throwForce = 0.03;
 
 Player.prototype.createBody = function() {
 	var x = 200;
@@ -53,8 +53,8 @@ Player.prototype.handleMovementInput = function(gamepad, tickEvent) {
 	if(Math.abs(joyY) < this.deadZone)
 		joyY = 0;
 
-	var x = joyX * this.walkSpeed;
-	var y = joyY * this.walkSpeed;
+	var x = joyX * this.walkForce;
+	var y = joyY * this.walkForce;
 
 	if(this.canWalk())
 		Matter.Body.applyForce(this.body, this.body.position, {x: x, y: y});
@@ -80,7 +80,8 @@ Player.prototype.handleFlickInput = function(gamepad, tickEvent) {
 
 		var direction = Math.atan2(joyY, joyX);
 
-		this.throw(strength, direction);
+		if(this.possession)
+			this.throw(strength, direction);
 
 		this.flickStart = undefined;
 	}
