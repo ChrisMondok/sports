@@ -8,13 +8,6 @@ window.addEventListener('load', function() {
 	var engine = Engine.create(document.body);
 
 	window.engine = engine;
-
-	// create two boxes and a ground
-	var boxA = Bodies.rectangle(400, 200, 80, 80, {friction: 0, frictionAir: 0});
-	var boxB = Bodies.rectangle(450, 50, 80, 80, {friction: 0, frictionAir: 0});
-
-	// add all of the bodies to the world
-	World.add(engine.world, [boxA, boxB]);
 	engine.world.gravity.y = 0;
 
 	// run the engine

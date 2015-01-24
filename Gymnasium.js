@@ -16,7 +16,6 @@ Gymnasium.prototype.goalBuffer = 65;
 Gymnasium.prototype.totalDodgeBalls = 5;
 Gymnasium.prototype.dodgeBallSize = 7;
 
-Gymnasium.prototype.totalHockeySticks = 4;
 Gymnasium.prototype.hockeyPuckSize = 5;
 Gymnasium.prototype.tennisBallSize = 5;
 Gymnasium.prototype.frisbeeSize = 7;
@@ -59,4 +58,7 @@ Gymnasium.prototype.createSportItems = function(world) {
 	for (ballCounter = 0; ballCounter < this.totalDodgeBalls; ballCounter++) {
 		new Ball(world, (world.bounds.min.x + this.wallThickness + this.dodgeBallSize) * (ballCounter + 1), world.bounds.min.y + this.wallThickness, this.dodgeBallSize);
 	}
+	
+	//Frisbee
+	new Ball(world, centerX, gymHeight - this.wallThickness - this.frisbeeSize, this.frisbeeSize);
 };
