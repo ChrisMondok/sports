@@ -9,3 +9,6 @@ Pawn.prototype.destroy = function() {
 	if(this.body)
 		this.game.getWorld().remove(this.body);
 }
+
+Pawn.prototype.tick = function(tickEvent) {
+};

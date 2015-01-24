@@ -1,6 +1,6 @@
 function Game(domNode) {
 	this.engine = this.createEngine(domNode);
-	this.gameType =	this.chooseAGame();
+	this.chooseAGame();
 	this.players = [];
 	this.gym = new Gymnasium(this);
 }
@@ -16,7 +16,7 @@ Game.prototype.createEngine = function(domNode) {
 
 	Matter.Engine.run(engine);
 
-	Matter.Events.on(engine, 'collisionActive', this.onCollisionActive.bind(this));
+	Matter.Events.on(engine, 'collisionStart', this.onCollisionActive.bind(this));
 
 	Matter.Events.on(engine, 'tick', this.onTick.bind(this));
 
@@ -24,21 +24,23 @@ Game.prototype.createEngine = function(domNode) {
 };
 
 Game.prototype.onTick = function(tickEvent) {
-	this.pollGamepads();
+	this.getWorld().bodies.forEach(function(body) {
+		if(body.pawn)
+			body.pawn.tick(tickEvent);
+	});
+	this.pollGamepads(tickEvent);
 };
 
-Game.prototype.pollGamepads = function() {
+Game.prototype.pollGamepads = function(tickEvent) {
 	var gamepads = navigator.getGamepads();
 	
 	for(var i = 0; i < gamepads.length; i++)
 	{
 		if(gamepads[i]) {
-			if(!this.players[i]) {
+			if(!this.players[i])
 				this.players[i] = new Player(this);
-				this.players[i].body.groupId = i + 1;
-			}
 
-			this.players[i].handleInput(gamepads[i]);
+			this.players[i].handleInput(gamepads[i], tickEvent);
 		}
 	}
 };
@@ -54,7 +56,8 @@ Game.prototype.onCollisionActive = function(collisionEvent) {
 
 Game.prototype.chooseAGame = function() {
 	var i = Math.floor(Math.random() * gameTypes.length);
-	return gameTypes[i];
+	this.gameType = gameTypes[i];
+	console.log("Now playing %s", this.gameType);
 };
 
 Game.prototype.getWorld = function() {
