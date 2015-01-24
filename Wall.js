@@ -3,8 +3,6 @@ function Wall(world, x, y, width, height) {
 
 	this.body = this.createBody(x, y, width, height);
 	Matter.World.add(world, this.body);
-
-	console.log("You created a wall at %s %s, with dims %s, %s", x, y, width, height);
 }
 
 Wall.extends(Pawn);

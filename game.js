@@ -15,12 +15,13 @@ window.addEventListener('load', function() {
 
 	// add all of the bodies to the world
 	World.add(engine.world, [boxA, boxB]);
-
 	engine.world.gravity.y = 0;
 
 	// run the engine
 	Engine.run(engine);
 
+	var gym = new Gymnasium(engine.world);
+	
 	var players = [];
 
 	Matter.Events.on(engine, 'tick', function() {
