@@ -62,7 +62,6 @@ Game.prototype.onTick = function(tickEvent) {
 		if(body.pawn)
 			body.pawn.tick(tickEvent);
 	});
-	this.pollGamepads(tickEvent);
 };
 
 Game.prototype.pollGamepads = function(tickEvent) {

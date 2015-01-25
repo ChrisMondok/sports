@@ -6,6 +6,7 @@ function Player(game) {
 	Matter.World.add(game.getWorld(), this.body); 
 
 	this.flickStart = undefined;
+	this.gamepad = undefined;
 }
 
 Player.extends(Pawn);
@@ -35,8 +36,10 @@ Player.prototype.setCollisionGroup = function(collisionGroupId) {
 };
 
 Player.prototype.handleInput = function(gamepad, tickEvent) {
-	this.handleMovementInput(gamepad, tickEvent);
-	this.handleFlickInput(gamepad, tickEvent);
+	if (this.gamepad.axesLayout) {
+		this.handleMovementInput(gamepad, tickEvent);
+		this.handleFlickInput(gamepad, tickEvent);
+	}
 };
 
 Player.prototype.handleMovementInput = function(gamepad, tickEvent) {
