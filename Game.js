@@ -1,8 +1,9 @@
 function Game(domNode) {
 	this.engine = this.createEngine(domNode);
+	
 	this.players = [];
 	this.gym = new Gymnasium(this);
-
+	
 	this.gym.createSportsObjects();
 
 	this.scores = [{}, {}];
@@ -54,7 +55,7 @@ Game.prototype.createEngine = function(domNode) {
 		canvas.style.backgroundSize = gameWidth+"px "+gameHeight+"px";
 	});
 
-	document.body.addEventListener('click', function() {
+	canvas.addEventListener('click', function() {
 		if (document.body.requestFullscreen) {
 			document.body.requestFullscreen();
 		} else if (document.body.msRequestFullscreen) {

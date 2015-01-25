@@ -5,48 +5,61 @@ function GamepadListener(game) {
 	];
 	this.rightJoystickLayouts = [
 		new Joystick(2, 3),
-		new Joystick(3, 2)
+		new Joystick(3, 2),
+		new Joystick(3, 4)
 	];
 
 	this.game = game;
 	this.gamepads = undefined;
-	this.setupCanvases = [
+	this.leftSetupCanvases = [
 		document.createElement("canvas"),
+		document.createElement("canvas")
+	];
+	this.rightSetupCanvases = [
 		document.createElement("canvas"),
 		document.createElement("canvas"),
 		document.createElement("canvas")
 	];
 	this.setupPlayer = undefined;
 	
-	for (canvasCounter = 0; canvasCounter < this.setupCanvases.length; canvasCounter++) {
-		var canvas = this.setupCanvases[canvasCounter];
-		canvas.width = 80;
-		canvas.height = 80;
-		canvas.addEventListener("click", function(mouseEvent) {
-			var side = mouseEvent.target.getAttribute("data-joystickSide");
-			var index = parseInt(mouseEvent.target.getAttribute("data-joystickIndex"));
-			
-			if (side == "left") {
-				this.setupPlayer.gamepad.layout.leftJoystick = this.leftJoystickLayouts[index];
-			}
-			else if (side == "right") {
-				this.setupPlayer.gamepad.layout.rightJoystick = this.rightJoystickLayouts[index];
-			}
-			
-			if (this.setupPlayer.gamepad.setupComplete()) {
-				this.setupPlayer = undefined;
-			}
-		}.bind(this));
-
-		document.getElementById('gamepadCanvasContainer').appendChild(this.setupCanvases[canvasCounter]);
+	//Left Stick Config
+	for (canvasCounter = 0; canvasCounter < this.leftSetupCanvases.length; canvasCounter++) {
+		var canvas = this.leftSetupCanvases[canvasCounter];
+		canvas.width = canvas.height = this.configCanvasDimension;
+		canvas.addEventListener("click", this.handleJoystickConfigClick.bind(this, canvasCounter, "left"));
+		document.getElementById('leftStickCanvasContainer').appendChild(this.leftSetupCanvases[canvasCounter]);
+	}
+	
+	//Right Stick Config
+	for (canvasCounter = 0; canvasCounter < this.rightSetupCanvases.length; canvasCounter++) {
+		var canvas = this.rightSetupCanvases[canvasCounter];
+		canvas.width = canvas.height = this.configCanvasDimension;
+		canvas.addEventListener("click", this.handleJoystickConfigClick.bind(this, canvasCounter, "right"));
+		document.getElementById('rightStickCanvasContainer').appendChild(this.rightSetupCanvases[canvasCounter]);
 	}
 	
 	Matter.Events.on(game.engine, 'tick', this.onTick.bind(this));
 }
 
+GamepadListener.prototype.configCanvasDimension = 50;
+GamepadListener.prototype.joystickIndicatorRange = 50 / 4;
+
 GamepadListener.prototype.onTick = function(tickEvent) {
 	this.pollGamepads(tickEvent);
 };
+
+GamepadListener.prototype.handleJoystickConfigClick = function(index, side, mouseEvent) {	
+	if (side == "left") {
+		this.setupPlayer.gamepad.layout.leftJoystick = this.leftJoystickLayouts[index];
+	}
+	else if (side == "right") {
+		this.setupPlayer.gamepad.layout.rightJoystick = this.rightJoystickLayouts[index];
+	}
+	
+	if (this.setupPlayer.gamepad.setupComplete()) {
+		this.setupPlayer = undefined;
+	}
+}
 
 GamepadListener.prototype.pollGamepads = function(tickEvent) {
 	var gamepads = navigator.getGamepads();
@@ -71,72 +84,48 @@ GamepadListener.prototype.pollGamepads = function(tickEvent) {
 			if (!player.gamepad.setupComplete() && (!this.setupPlayer || this.setupPlayer == player)) {
 				this.setupPlayer = player;
 				
-				//Render Left Joystick Input Setup 1
-				var joystick = this.leftJoystickLayouts[0];
-				var canvas = this.setupCanvases[0];
-				var context = canvas.getContext("2d");
-				var widthCenter = canvas.width / 2;
-				var heightCenter = canvas.height / 2;
-				context.clearRect(0, 0, canvas.width, canvas.height);
-				context.beginPath();
-				context.arc(widthCenter, heightCenter, widthCenter, 2 * Math.PI, 0, true);
-				context.stroke();
-				context.beginPath();
-				context.arc(widthCenter + (input.axes[joystick.horizontalAxis] * 20), heightCenter + (input.axes[joystick.verticalAxis] * 20), widthCenter / 4, 2 * Math.PI, 0, true);
-				context.stroke();
-				canvas.setAttribute("data-joystickSide", "left");
-				canvas.setAttribute("data-joystickIndex", 0);
+				for (layoutCounter = 0; layoutCounter < this.leftJoystickLayouts.length; layoutCounter++) {
+					var joystick = this.leftJoystickLayouts[layoutCounter];
+					var canvas = this.leftSetupCanvases[layoutCounter];
+					var context = canvas.getContext("2d");
+					var widthCenter = canvas.width / 2;
+					var heightCenter = canvas.height / 2;
+					context.clearRect(0, 0, canvas.width, canvas.height);
+					context.beginPath();
+					context.arc(widthCenter, heightCenter, widthCenter, 2 * Math.PI, 0, true);
+					context.stroke();
+					context.beginPath();
+					context.arc(widthCenter + (input.axes[joystick.horizontalAxis] * this.joystickIndicatorRange), heightCenter + (input.axes[joystick.verticalAxis] * this.joystickIndicatorRange), widthCenter / 4, 2 * Math.PI, 0, true);
+					context.strokeStyle = "white";
+					context.stroke();
+				}
 				
-				//Render Left Joystick Input Setup 2
-				joystick = this.leftJoystickLayouts[1];
-				canvas = this.setupCanvases[1];
-				context = canvas.getContext("2d");
-				widthCenter = canvas.width / 2;
-				heightCenter = canvas.height / 2;
-				context.clearRect(0, 0, canvas.width, canvas.height);
-				context.beginPath();
-				context.arc(widthCenter, heightCenter, widthCenter, 2 * Math.PI, 0, true);
-				context.stroke();
-				context.beginPath();
-				context.arc(widthCenter + (input.axes[joystick.horizontalAxis] * 20), heightCenter + (input.axes[joystick.verticalAxis] * 20), widthCenter / 4, 2 * Math.PI, 0, true);
-				context.stroke();
-				canvas.setAttribute("data-joystickSide", "left");
-				canvas.setAttribute("data-joystickIndex", 1);
+				for (layoutCounter = 0; layoutCounter < this.rightJoystickLayouts.length; layoutCounter++) {
+					var joystick = this.rightJoystickLayouts[layoutCounter];
+					var canvas = this.rightSetupCanvases[layoutCounter];
+					var context = canvas.getContext("2d");
+					var widthCenter = canvas.width / 2;
+					var heightCenter = canvas.height / 2;
+					context.clearRect(0, 0, canvas.width, canvas.height);
+					context.beginPath();
+					context.arc(widthCenter, heightCenter, widthCenter, 2 * Math.PI, 0, true);
+					context.stroke();
+					context.beginPath();
+					context.arc(widthCenter + (input.axes[joystick.horizontalAxis] * this.joystickIndicatorRange), heightCenter + (input.axes[joystick.verticalAxis] * this.joystickIndicatorRange), widthCenter / 4, 2 * Math.PI, 0, true);
+					context.strokeStyle = "white";
+					context.stroke();
+				}
 				
-				//Render Right Joystick Input Setup 1
-				joystick = this.rightJoystickLayouts[0];
-				canvas = this.setupCanvases[2];
-				context = canvas.getContext("2d");
-				widthCenter = canvas.width / 2;
-				heightCenter = canvas.height / 2;
-				context.clearRect(0, 0, canvas.width, canvas.height);
-				context.beginPath();
-				context.arc(widthCenter, heightCenter, widthCenter, 2 * Math.PI, 0, true);
-				context.stroke();
-				context.beginPath();
-				context.arc(widthCenter + (input.axes[joystick.horizontalAxis] * 20), heightCenter + (input.axes[joystick.verticalAxis] * 20), widthCenter / 4, 2 * Math.PI, 0, true);
-				context.stroke();
-				canvas.setAttribute("data-joystickSide", "right");
-				canvas.setAttribute("data-joystickIndex", 0);
-				
-				//Render Right Joystick Input Setup 2
-				joystick = this.rightJoystickLayouts[1];
-				canvas = this.setupCanvases[3];
-				context = canvas.getContext("2d");
-				widthCenter = canvas.width / 2;
-				heightCenter = canvas.height / 2;
-				context.clearRect(0, 0, canvas.width, canvas.height);
-				context.beginPath();
-				context.arc(widthCenter, heightCenter, widthCenter, 2 * Math.PI, 0, true);
-				context.stroke();
-				context.beginPath();
-				context.arc(widthCenter + (input.axes[joystick.horizontalAxis] * 20), heightCenter + (input.axes[joystick.verticalAxis] * 20), widthCenter / 4, 2 * Math.PI, 0, true);
-				context.stroke();
-				canvas.setAttribute("data-joystickSide", "right");
-				canvas.setAttribute("data-joystickIndex", 1);
+				document.getElementById("gamepadCanvasContainer").style.display = "block";
 			}
 			else if (!this.setupPlayer) {
-				this.setupCanvases.forEach(function(canvas) {
+				document.getElementById("gamepadCanvasContainer").style.display = "none";
+			
+				this.leftSetupCanvases.forEach(function(canvas) {
+					var context = canvas.getContext("2d");
+					context.clearRect(0, 0, canvas.width, canvas.height);
+				});
+				this.rightSetupCanvases.forEach(function(canvas) {
 					var context = canvas.getContext("2d");
 					context.clearRect(0, 0, canvas.width, canvas.height);
 				});

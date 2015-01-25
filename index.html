@@ -6,6 +6,9 @@
 			body, html {
 				margin: 0;
 				padding: 0;
+				background-color: black;
+				color: white;
+				text-align: center;
 			}
 
 			#gamepadCanvasContainer {
@@ -14,11 +17,13 @@
 				left: 0;
 				bottom: 0;
 				right: 0;
+				display: none;
 			}
 		</style>
 		<script type="text/javascript" src="matter-0.8.0.js"></script>
 		<script type="text/javascript" src="extensions.js"></script>
 		<script type="text/javascript" src="main.js"></script>
+		<script type="text/javascript" src="GamepadListener.js"></script>
 		<script type="text/javascript" src="Pawn.js"></script>
 		<script type="text/javascript" src="Ball.js"></script>
 		<script type="text/javascript" src="Dodgeball.js"></script>
@@ -29,7 +34,6 @@
 		<script type="text/javascript" src="GamepadLayout.js"></script>
 		<script type="text/javascript" src="Player.js"></script>
 		<script type="text/javascript" src="Game.js"></script>
-		<script type="text/javascript" src="GamepadListener.js"></script>
 		<script type="text/javascript" src="Joystick.js"></script>
 		<script type="text/javascript" src="TennisNet.js"></script>
 	</head>
@@ -43,7 +47,14 @@
 		<audio data-sound="throw-1" src="sounds/throw-1.ogg"></audio>
 		<audio data-sound="throw-2" src="sounds/throw-2.ogg"></audio>
 		<audio data-sound="cheer-short" src="sounds/cheer-short.ogg"></audio>
-		<div id="gamepadCanvasContainer"></div>
+		<div id="gamepadCanvasContainer">
+Left Stick
+			<div id="leftStickCanvasContainer">
+			</div>
+Right Stick
+			<div id="rightStickCanvasContainer">
+			</div>
+		</div>
 	</body>
 </html>
 
