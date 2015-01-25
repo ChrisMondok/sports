@@ -6,11 +6,8 @@ function Player(game, x, y) {
 	Matter.World.add(game.getWorld(), this.body); 
 
 	this.flickStart = undefined;
-<<<<<<< HEAD
 	this.gamepad = undefined;
-=======
 	this.lastLunged = 0;
->>>>>>> 0760c3c8a7ca43ea2fa279d04e28eb8e84a7d258
 }
 
 Player.extends(Pawn);

@@ -87,13 +87,9 @@ Game.prototype.onTick = function(tickEvent) {
 		if(body.pawn)
 			body.pawn.tick(tickEvent);
 	});
-<<<<<<< HEAD
-=======
-	this.pollGamepads(tickEvent);
-
+	
 	if(!this.gameType || (this.timestamp - this.lastGameChangedAt > this.attentionSpan))
 		this.chooseAGame();
->>>>>>> 0760c3c8a7ca43ea2fa279d04e28eb8e84a7d258
 };
 
 Game.prototype.pollGamepads = function(tickEvent) {

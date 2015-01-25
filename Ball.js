@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-function Ball(world, x, y, radius) {
-	this._super.apply(this, arguments);
-
-	this.body = this.createBody(x, y, radius);
-	Matter.World.add(world, this.body);
-=======
 function Ball(game, x, y) {
 	Pawn.apply(this, arguments);
 
@@ -12,16 +5,10 @@ function Ball(game, x, y) {
 	Matter.World.add(game.getWorld(), this.body);
 
 	this.lastThrownBy = null;
->>>>>>> 0760c3c8a7ca43ea2fa279d04e28eb8e84a7d258
 }
 
 Ball.extends(Pawn);
 
-<<<<<<< HEAD
-Ball.prototype.createBody = function(x, y, radius) {
-	return Matter.Bodies.circle(x, y, radius);
-}
-=======
 Ball.prototype.canGrab = function() { return false; };
 
 Ball.prototype.possessor = null;
@@ -64,4 +51,3 @@ Ball.prototype.createBody = function(x, y) {
 	body.pawn = this;
 	return body;
 };
->>>>>>> 0760c3c8a7ca43ea2fa279d04e28eb8e84a7d258
