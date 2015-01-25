@@ -13,6 +13,8 @@ FlyingDisc.prototype.canGrab = function() {
 };
 
 FlyingDisc.prototype.tick = function(tickEvent) {
+	Ball.prototype.tick.apply(this, arguments);
+
 	this.body.frictionAir = (this.body.speed > this.landedSpeed ? 0.005 : 0.1);
 
 	if(this.game.gameType == 'Ultimate Flying Disc' && this.possessor) {

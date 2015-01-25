@@ -13,6 +13,7 @@ Dodgeball.prototype.canGrab = function() {
 };
 
 Dodgeball.prototype.tick = function() {
+	Ball.prototype.tick.apply(this, arguments);
 	if(this.game.gameType == 'Dodgeball')
 		this.body.render.sprite.texture = this.body.speed < this.hitMinSpeed ? './img/dodgeball-active.png' : './img/dodgeball-thrown.png';
 	else

@@ -1,6 +1,5 @@
 function Game(domNode) {
 	this.engine = this.createEngine(domNode);
-	this.chooseAGame();
 	this.players = [];
 	this.gym = new Gymnasium(this);
 
@@ -19,7 +18,9 @@ Game.prototype.score = function(team) {
 	this.scores[team][this.gameType]++;
 };
 
-var gameTypes = ['Ultimate Flying Disc', 'Dodgeball', 'Tennis'];
+var gameTypes = ['Ultimate Flying Disc', 'Dodgeball'];
+
+Game.prototype.attentionSpan = 25 * 1000;
 
 Game.prototype.createEngine = function(domNode) {
 	var gameWidth = 1366;
@@ -87,6 +88,9 @@ Game.prototype.onTick = function(tickEvent) {
 			body.pawn.tick(tickEvent);
 	});
 	this.pollGamepads(tickEvent);
+
+	if(!this.gameType || (this.timestamp - this.lastGameChangedAt > this.attentionSpan))
+		this.chooseAGame();
 };
 
 Game.prototype.pollGamepads = function(tickEvent) {
@@ -117,10 +121,18 @@ Game.prototype.onCollisionActive = function(collisionEvent) {
 };
 
 Game.prototype.chooseAGame = function() {
+	this.lastGameChangedAt = this.timestamp;
+
 	var i = Math.floor(Math.random() * gameTypes.length);
+
+	if(this.gameType)
+		this.playSound('whistle');
+
 	this.gameType = gameTypes[i];
+
 	var soundName = this.gameType.replace(/ /g,'').toLowerCase();
-	this.playSound(soundName);
+
+	setTimeout(this.playSound.bind(this, soundName), 1000);
 };
 
 Game.prototype.getWorld = function() {
