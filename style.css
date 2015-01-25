@@ -1,0 +1,15 @@
+body, html {
+	font-family: sans-serif;
+}
+section {
+	background-color: #EEE;
+	margin: 1em;
+}
+
+header {
+	font-size: 2em;
+	border-left: 1em solid #F79A42;
+	color: white;
+	background-color: #333;
+	padding: 4px;
+}
