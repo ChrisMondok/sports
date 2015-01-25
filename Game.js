@@ -119,6 +119,8 @@ Game.prototype.onTick = function(tickEvent) {
 Game.prototype.endGame = function() {
 	var self = this;
 
+	this.playSound("gameover");
+
 	var str = ["Game Over!", printIndividualScore(0), printIndividualScore(1)].join('\n');
 
 	alert(str);
