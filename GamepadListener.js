@@ -64,8 +64,10 @@ GamepadListener.prototype.pollGamepads = function(tickEvent) {
 				player.team = team;
 				player.gamepad = new Gamepad();
 			}
+			
 			var input = gamepads[i];
 			player.gamepad.input = input;
+			
 			if (!player.gamepad.setupComplete() && (!this.setupPlayer || this.setupPlayer == player)) {
 				this.setupPlayer = player;
 				

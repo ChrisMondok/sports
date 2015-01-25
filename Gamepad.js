@@ -8,33 +8,33 @@ Gamepad.prototype.setupComplete = function() {
 };
 
 Gamepad.prototype.getLeftVerticalAxis = function() {
-	if (!this.axesLayout) {
+	if (!this.layout.leftJoystick) {
 		return undefined;
 	}
 	
-	return input.axes[this.layout.leftJoystick.verticalAxis];
+	return this.input.axes[this.layout.leftJoystick.verticalAxis];
 };
 
 Gamepad.prototype.getLeftHorizontalAxis = function() {
-	if (!this.axesLayout) {
+	if (!this.layout.leftJoystick) {
 		return undefined;
 	}
 	
-	return input.axes[this.layout.leftJoystick.horizontalAxis];
+	return this.input.axes[this.layout.leftJoystick.horizontalAxis];
 };
 
 Gamepad.prototype.getRightVerticalAxis = function() {
-	if (!this.axesLayout) {
+	if (!this.layout.rightJoystick) {
 		return undefined;
 	}
 	
-	return input.axes[this.layout.rightJoystick.verticalAxis];
+	return this.input.axes[this.layout.rightJoystick.verticalAxis];
 };
 
 Gamepad.prototype.getRightHorizontalAxis = function() {
-	if (!this.axesLayout) {
+	if (!this.layout.rightJoystick) {
 		return undefined;
 	}
 	
-	return input.axes[this.layout.rightJoystick.horizontalAxis];
+	return this.input.axes[this.layout.rightJoystick.horizontalAxis];
 };
