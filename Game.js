@@ -54,17 +54,15 @@ Game.prototype.createEngine = function(domNode) {
 		canvas.style.backgroundSize = gameWidth+"px "+gameHeight+"px";
 	});
 
-	window.c = canvas;
-
-	canvas.addEventListener('click', function() {
-		if (canvas.requestFullscreen) {
-			canvas.requestFullscreen();
-		} else if (canvas.msRequestFullscreen) {
-			canvas.msRequestFullscreen();
-		} else if (canvas.mozRequestFullScreen) {
-			canvas.mozRequestFullScreen();
-		} else if (canvas.webkitRequestFullscreen) {
-			canvas.webkitRequestFullscreen();
+	document.body.addEventListener('click', function() {
+		if (document.body.requestFullscreen) {
+			document.body.requestFullscreen();
+		} else if (document.body.msRequestFullscreen) {
+			document.body.msRequestFullscreen();
+		} else if (document.body.mozRequestFullScreen) {
+			document.body.mozRequestFullScreen();
+		} else if (document.body.webkitRequestFullscreen) {
+			document.body.webkitRequestFullscreen();
 		}
 	});
 

@@ -37,8 +37,8 @@ function GamepadListener(game) {
 				this.setupPlayer = undefined;
 			}
 		}.bind(this));
-		
-		document.body.appendChild(this.setupCanvases[canvasCounter]);
+
+		document.getElementById('gamepadCanvasContainer').appendChild(this.setupCanvases[canvasCounter]);
 	}
 	
 	Matter.Events.on(game.engine, 'tick', this.onTick.bind(this));
