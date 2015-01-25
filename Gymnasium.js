@@ -92,7 +92,6 @@ Gymnasium.prototype.createDodgeballs = function() {
 	var centerX = (world.bounds.max.x + world.bounds.min.x)/2;
 	var centerY = (world.bounds.max.y + world.bounds.min.y)/2;
 	
-	//Dodgeballs
 	for (ballCounter = 0; ballCounter < this.totalDodgeBalls; ballCounter++) {
 		new Dodgeball(this.game, (world.bounds.min.x + this.wallThickness + Dodgeball.prototype.radius) * (ballCounter + 1), world.bounds.min.y + this.wallThickness);
 	}

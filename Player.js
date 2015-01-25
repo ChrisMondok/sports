@@ -8,6 +8,8 @@ function Player(game, x, y) {
 	this.flickStart = undefined;
 	this.gamepad = undefined;
 	this.lastLunged = 0;
+
+	new TennisRacket(game, this.body.position.x, this.body.position.y);
 }
 
 Player.extends(Pawn);
@@ -21,6 +23,7 @@ Player.prototype.deadZone = 0.2;
 Player.prototype.flickThreshhold = 0.9;
 
 Player.prototype.possession = null;
+Player.prototype.equipment = null;
 
 Player.prototype.radius = 25;
 
@@ -28,14 +31,16 @@ Player.prototype.throwForce = 0.03;
 
 Player.prototype.tick = function(tickEvent) {
 	this.handleInput(tickEvent);
-}
+	if(this.equipment)
+		this.equipment.tick(tickEvent);
+};
 
 Player.prototype.createBody = function(x, y) {
 	var body = Matter.Bodies.circle(x, y, this.radius, {frictionAir: 0.2});
 	body.pawn = this;
 	body.groupId = Matter.Body.nextGroupId();
 	return body;
-}
+};
 
 Player.prototype.setCollisionGroup = function(collisionGroupId) {
 	this.body.groupId = collisionGroupId;
@@ -143,10 +148,17 @@ Player.prototype.canWalk = function() {
 Player.prototype.handleCollision = function(otherThing) {
 	if(otherThing instanceof Ball && this.canAndShouldGrabBall(otherThing))
 		this.grab(otherThing);
+
+	if(otherThing instanceof Equipment && this.canAndShouldTakeEquipment(otherThing))
+		this.equip(otherThing);
 };
 
 Player.prototype.canAndShouldGrabBall = function(ball) {
 	return !this.possession && ball.canGrab();
+};
+
+Player.prototype.canAndShouldTakeEquipment = function(equipment) {
+	return !this.equipment && equipment.canEquip();
 };
 
 Player.prototype.grab = function(ball) {
@@ -169,6 +181,27 @@ Player.prototype.grab = function(ball) {
 	this.possession.length = 0;
 
 	Matter.World.add(this.game.getWorld(), this.possession);
+};
+
+Player.prototype.equip = function(equipment) {
+	this.equipment = equipment;
+	equipment.holder = this;
+	Matter.World.remove(this.game.getWorld(), equipment.body);
+};
+
+Player.prototype.dropEquipment = function() {
+	Matter.World.add(this.game.getWorld(), this.equipment.body);
+
+	var translation = {
+		x: this.body.position.x - this.equipment.body.position.x,
+		y: this.body.position.y - this.equipment.body.position.y
+	};
+
+	Matter.Body.translate(this.equipment.body, translation);
+
+	this.equipment.holder = null;
+
+	this.equipment = null;
 };
 
 Player.prototype.release = function() {
