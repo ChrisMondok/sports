@@ -7,7 +7,6 @@ Gymnasium.prototype.createSportsObjects = function() {
 	this.goals = this.createGoals();
 	this.createDodgeballs();
 	this.createFlyingDisc();
-	//this.createTennisNet();
 };
 
 Gymnasium.prototype.wallThickness = 25;
@@ -75,7 +74,7 @@ Gymnasium.prototype.createGoals = function() {
 	var gymWidth = world.bounds.max.x - world.bounds.min.x;
 	var gymHeight = world.bounds.max.y - world.bounds.min.y;
 	
-	var centerY = (world.bounds.max.y + world.bounds.min.y)/2;
+	var centerY = (world.bounds.max.y + world.bounds.min.y) / 2;
 	
 	return [
 		new Wall(this.game, world.bounds.min.x + this.goalBuffer + this.wallThickness, centerY, this.goalWidth, this.goalHeight),  //left
@@ -92,7 +91,6 @@ Gymnasium.prototype.createDodgeballs = function() {
 	var centerX = (world.bounds.max.x + world.bounds.min.x)/2;
 	var centerY = (world.bounds.max.y + world.bounds.min.y)/2;
 	
-	//Dodgeballs
 	for (ballCounter = 0; ballCounter < this.totalDodgeBalls; ballCounter++) {
 		new Dodgeball(this.game, (world.bounds.min.x + this.wallThickness + Dodgeball.prototype.radius) * (ballCounter + 1), world.bounds.min.y + this.wallThickness);
 	}
@@ -101,8 +99,18 @@ Gymnasium.prototype.createDodgeballs = function() {
 Gymnasium.prototype.createFlyingDisc = function() {
 	var world = this.game.getWorld();
 	var gymHeight = world.bounds.max.y - world.bounds.min.y;
-	var centerX = (world.bounds.max.x + world.bounds.min.x)/2;
-	new FlyingDisc(this.game, centerX, gymHeight - this.wallThickness - FlyingDisc.prototype.radius);
+	var centerX = (world.bounds.max.x + world.bounds.min.x) / 2;
+	var randomSide = Math.random();
+	
+	if (randomSide < 1/3) {
+		new FlyingDisc(this.game, centerX, this.wallThickness + FlyingDisc.prototype.radius);
+	}
+	else if (randomSide > 1/3 && randomSide < 2/3) {
+		new FlyingDisc(this.game, centerX, gymHeight - this.wallThickness - FlyingDisc.prototype.radius);
+	}
+	else {
+		new FlyingDisc(this.game, centerX, (gymHeight / 2) + FlyingDisc.prototype.radius);
+	}
 };
 
 Gymnasium.prototype.createTennisNet = function() {
