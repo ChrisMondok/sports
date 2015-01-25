@@ -27,7 +27,7 @@ Game.prototype.score = function(team, value) {
 };
 
 Game.prototype.updateScoreboard = function() {
-	var str = "Blue: "+ this.scores[0].Total+ ", Red: "+this.scores[1].Total;
+	var str = "Blue: "+ this.scores[0].Total.toFixed(2)+ ", Red: "+this.scores[1].Total.toFixed(2);
 	document.getElementById('scoreboard').innerHTML = str;
 };
 
