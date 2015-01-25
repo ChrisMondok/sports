@@ -76,8 +76,8 @@ Game.prototype.createEngine = function(domNode) {
 	Matter.Engine.run(engine);
 
 	Matter.Events.on(engine, 'collisionStart', this.onCollisionActive.bind(this));
-
 	Matter.Events.on(engine, 'tick', this.onTick.bind(this));
+	Matter.Events.on(engine, 'afterRender', this.afterRender.bind(this));
 
 	return engine;
 };
@@ -100,6 +100,22 @@ Game.prototype.onTick = function(tickEvent) {
 	this.gym.goals.forEach(function(g) {
 		g.tick(tickEvent);
 	});
+};
+
+Game.prototype.afterRender = function(renderEvent) {
+	var context = this.engine.render.canvas.getContext("2d");
+	for (playerCounter = 0; playerCounter < this.players.length; playerCounter++) {
+		var player = this.players[playerCounter];
+		if (player.gamepad.setupComplete()){
+			var textColor = player.team ? "darkred" : "blue";
+
+			context.font = "24px sans-serif";
+			context.fillStyle = textColor;
+			context.fillText(playerCounter,player.body.position.x,  player.body.position.y);
+			context.textAlign = "center";
+			context.textBaseline = "middle";
+		}
+	}
 };
 
 Game.prototype.pollGamepads = function(tickEvent) {

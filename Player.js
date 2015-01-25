@@ -32,6 +32,11 @@ Player.prototype.tick = function(tickEvent) {
 		this.translateEquipmentToSelf();
 		this.equipment.tick(tickEvent);
 	}
+	this.updateTexture();
+};
+
+Player.prototype.updateTexture = function() {
+	this.body.render.sprite.texture = "./img/player-team" + this.team + "-idle.png";
 };
 
 Player.prototype.addToWorld = function() {
