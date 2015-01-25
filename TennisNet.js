@@ -29,6 +29,8 @@ TennisNet.prototype.createComposite = function() {
 	Matter.Composite.add(composite, topPost);
 	Matter.Composite.add(composite, bottomPost);
 
+	composite.pawn = this;
+
 	return composite;
 };
 

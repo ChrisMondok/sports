@@ -1,8 +1,6 @@
 function Gymnasium(game) {
-	Pawn.apply(this, arguments);
+	this.game = game;
 };
-
-Gymnasium.extends(Pawn);
 
 Gymnasium.prototype.createSportsObjects = function() {
 	this.walls = this.createWalls();
@@ -56,6 +54,19 @@ Gymnasium.prototype.createWalls = function() {
 		new Wall(this.game, centerX, world.bounds.max.y + 100 - this.wallThickness, gymWidth, 200), //bottom,
 		new Wall(this.game, - 100 + this.wallThickness, centerY, 200, gymHeight) //left
 	];
+};
+
+Gymnasium.prototype.tick = function(tickEvent) {
+	if(this.game.gameType == 'Tennis') {
+		var nets = this.game.getWorld().composites.filter(function(b) {
+			return b.pawn && b.pawn instanceof TennisNet;
+		});
+
+		if(nets.length == 0) {
+			console.log("NO NETS! MAKE ONE");
+			this.createTennisNet();
+		}
+	}
 };
 
 Gymnasium.prototype.createGoals = function() {

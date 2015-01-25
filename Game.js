@@ -18,7 +18,7 @@ Game.prototype.score = function(team) {
 	this.scores[team][this.gameType]++;
 };
 
-var gameTypes = ['Ultimate Flying Disc', 'Dodgeball'];
+var gameTypes = ['Tennis', 'Ultimate Flying Disc', 'Dodgeball'];
 
 Game.prototype.attentionSpan = 25 * 1000;
 
@@ -91,6 +91,8 @@ Game.prototype.onTick = function(tickEvent) {
 
 	if(!this.gameType || (this.timestamp - this.lastGameChangedAt > this.attentionSpan))
 		this.chooseAGame();
+
+	this.gym.tick(tickEvent);
 };
 
 Game.prototype.pollGamepads = function(tickEvent) {
