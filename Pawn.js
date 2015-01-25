@@ -7,7 +7,7 @@ Pawn.prototype.handleCollision = function(iDontKnowYet) {
 
 Pawn.prototype.destroy = function() {
 	if(this.body)
-		this.game.getWorld().remove(this.body);
+		Matter.World.remove(this.game.getWorld(), this.body);
 }
 
 Pawn.prototype.tick = function(tickEvent) {

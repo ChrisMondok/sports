@@ -1,11 +1,26 @@
 function Game(domNode) {
 	this.engine = this.createEngine(domNode);
-	this.chooseAGame();
 	this.players = [];
 	this.gym = new Gymnasium(this);
-}
 
-var gameTypes = ['ultimateFlyingDisc', 'dodgeball'];
+	this.gym.createSportsObjects();
+
+	this.scores = [{}, {}];
+
+	gameTypes.forEach(function(gameType) {
+		this.scores[0][gameType] = 0;
+		this.scores[1][gameType] = 0;
+	}, this);
+};
+
+Game.prototype.score = function(team) {
+	console.info("Team %s got a point in %s", team, this.gameType);
+	this.scores[team][this.gameType]++;
+};
+
+var gameTypes = ['Ultimate Flying Disc', 'Dodgeball'];
+
+Game.prototype.attentionSpan = 25 * 1000;
 
 Game.prototype.createEngine = function(domNode) {
 	var gameWidth = 1366;
@@ -17,12 +32,11 @@ Game.prototype.createEngine = function(domNode) {
 	};
 
 	var engine = Matter.Engine.create(domNode, {
-		world: {
-			bounds: gameDimensions
-		},
+		world: { bounds: gameDimensions },
 		render: {
 			bounds: gameDimensions,
 			options: {
+				wireframes: false,
 				width: gameWidth,
 				height: gameHeight,
 				showAngleIndicator: true
@@ -31,6 +45,16 @@ Game.prototype.createEngine = function(domNode) {
 	});
 
 	var canvas = engine.render.canvas;
+
+	Matter.Render.setBackground(engine.render, "url(img/gymnasium.png)");
+
+	//NOTE: this is gross.
+	setTimeout(function() {
+		canvas.style.backgroundImage = "url(img/gymnasium.png)";
+		canvas.style.backgroundSize = gameWidth+"px "+gameHeight+"px";
+	});
+
+	window.c = canvas;
 
 	canvas.addEventListener('click', function() {
 		if (canvas.requestFullscreen) {
@@ -58,10 +82,18 @@ Game.prototype.createEngine = function(domNode) {
 };
 
 Game.prototype.onTick = function(tickEvent) {
+	this.timestamp = tickEvent.timestamp;
 	this.getWorld().bodies.forEach(function(body) {
 		if(body.pawn)
 			body.pawn.tick(tickEvent);
 	});
+<<<<<<< HEAD
+=======
+	this.pollGamepads(tickEvent);
+
+	if(!this.gameType || (this.timestamp - this.lastGameChangedAt > this.attentionSpan))
+		this.chooseAGame();
+>>>>>>> 0760c3c8a7ca43ea2fa279d04e28eb8e84a7d258
 };
 
 Game.prototype.pollGamepads = function(tickEvent) {
@@ -71,7 +103,9 @@ Game.prototype.pollGamepads = function(tickEvent) {
 	{
 		if(gamepads[i]) {
 			if(!this.players[i]) {
-				var player = this.players[i] = new Player(this);
+				var team = i % 2;
+				var x = this.getWorld().bounds.max.x / 4 + team * this.getWorld().bounds.max.x / 2;
+				var player = this.players[i] = new Player(this, x, 300);
 				player.team = i % 2;
 			}
 
@@ -90,11 +124,26 @@ Game.prototype.onCollisionActive = function(collisionEvent) {
 };
 
 Game.prototype.chooseAGame = function() {
+	this.lastGameChangedAt = this.timestamp;
+
 	var i = Math.floor(Math.random() * gameTypes.length);
+
+	if(this.gameType)
+		this.playSound('whistle');
+
 	this.gameType = gameTypes[i];
-	console.log("Now playing %s", this.gameType);
+
+	var soundName = this.gameType.replace(/ /g,'').toLowerCase();
+
+	setTimeout(this.playSound.bind(this, soundName), 1000);
 };
 
 Game.prototype.getWorld = function() {
 	return this.engine.world;
 };
+
+Game.prototype.playSound = function(sound) {
+	var audio = document.querySelector('audio[data-sound='+sound+']');
+	if(audio)
+		audio.play();
+}

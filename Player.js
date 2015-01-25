@@ -1,17 +1,24 @@
-function Player(game) {
+function Player(game, x, y) {
 	Pawn.apply(this, arguments);
 
-	this.body = this.createBody();
+	this.body = this.createBody(x, y);
 
 	Matter.World.add(game.getWorld(), this.body); 
 
 	this.flickStart = undefined;
+<<<<<<< HEAD
 	this.gamepad = undefined;
+=======
+	this.lastLunged = 0;
+>>>>>>> 0760c3c8a7ca43ea2fa279d04e28eb8e84a7d258
 }
 
 Player.extends(Pawn);
 
 Player.prototype.walkForce = 0.01;
+Player.prototype.lungeForce = 0.2;
+
+Player.prototype.lungeCooldown = 1000;
 
 Player.prototype.deadZone = 0.2;
 Player.prototype.flickThreshhold = 0.9;
@@ -22,9 +29,7 @@ Player.prototype.radius = 25;
 
 Player.prototype.throwForce = 0.03;
 
-Player.prototype.createBody = function() {
-	var x = 200;
-	var y = 200;
+Player.prototype.createBody = function(x, y) {
 	var body = Matter.Bodies.circle(x, y, this.radius, {frictionAir: 0.2});
 	body.pawn = this;
 	body.groupId = Matter.Body.nextGroupId();
@@ -82,12 +87,48 @@ Player.prototype.handleFlickInput = function(gamepad, tickEvent) {
 
 		var direction = Math.atan2(joyY, joyX);
 
-		if(this.possession)
+		if(this.canThrow())
 			this.throw(strength, direction);
+		else {
+			if(this.canLunge())
+				this.lunge(strength, direction);
+		}
 
 		this.flickStart = undefined;
 	}
 };
+
+Player.prototype.canThrow = function() {
+	if(!this.possession)
+		return false;
+
+	if(this.game.gameType == 'Dodgeball' && !this.isOnOwnHalfOfField()) {
+		console.log("Can't throw, on wrong side");
+		return false;
+	}
+
+	return true;
+};
+
+Player.prototype.canLunge = function() {
+	return !this.possession && (this.game.timestamp - this.lastLunged) > this.lungeCooldown;
+};
+
+Player.prototype.lunge = function(strength, direction) {
+	var force = {
+		x: Math.cos(direction) * strength * this.lungeForce,
+		y: Math.sin(direction) * strength * this.lungeForce
+	};
+
+	this.lastLunged = this.game.timestamp;
+
+	Matter.Body.applyForce(this.body, this.body.position, force);
+};
+
+Player.prototype.isOnOwnHalfOfField = function() {
+	var half = Math.floor(this.body.position.x / (this.game.getWorld().bounds.max.x / 2));
+	return half == this.team;
+}
 
 Player.prototype.flick = function() {
 	if(this.possession) {
@@ -96,40 +137,23 @@ Player.prototype.flick = function() {
 };
 
 Player.prototype.canWalk = function() {
-	if(game.gameType == 'ultimateFlyingDisc' && this.possession)
+	if(this.game.gameType == 'Ultimate Flying Disc' && this.possession)
 		return false;
 
 	return true;
 };
 
 Player.prototype.handleCollision = function(otherThing) {
-	if(otherThing instanceof Ball) {
-		if(this.game.gameType == 'dodgeball' && otherThing instanceof Dodgeball && !otherThing.canGrab())
-			otherThing.lastThrownBy.scorePoint();
-		if(otherThing.canGrab() && this.canAndShouldGrabBall(otherThing))
-			this.grab(otherThing);
-	}
-};
-
-Player.prototype.scorePoint = function() {
-	console.log("Player on team %s scored a point.", this.team);
+	if(otherThing instanceof Ball && this.canAndShouldGrabBall(otherThing))
+		this.grab(otherThing);
 };
 
 Player.prototype.canAndShouldGrabBall = function(ball) {
-	if(this.possession) {
-		return false;
-	}
-	if(!ball.canGrab()) {
-		return false;
-	}
-
-	return true;
-}
+	return !this.possession && ball.canGrab();
+};
 
 Player.prototype.grab = function(ball) {
 	ball.possessor = this;
-
-	window.P = this;
 
 	ball.body.groupId = this.body.groupId;
 
@@ -138,14 +162,6 @@ Player.prototype.grab = function(ball) {
 	this.possession = Matter.Constraint.create({
 		bodyA: this.body,
 		bodyB: ball.body,
-//		pointA: {
-//			x: 0,
-//			y: -(this.radius + ball.radius)
-//		},
-//		pointB: {
-//			x: 0,
-//			y: 0
-//		},
 		stiffness: 1,
 		render: {
 			lineWidth: 5,
@@ -182,6 +198,9 @@ Player.prototype.throw = function(strength, direction) {
 	Matter.Body.applyForce(ball.body, ball.body.position, {x: x, y: y});
 
 	ball.lastThrownBy = this;
+
+	var sound = "throw-"+Math.floor(strength * 2);
+	this.game.playSound(sound);
 };
 
 Player.prototype.translateBallOutsideOfPlayer = function(ball, direction) {
