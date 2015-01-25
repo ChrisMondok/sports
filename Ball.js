@@ -36,10 +36,10 @@ Ball.prototype.tick = function() {
 };
 
 Ball.prototype.isOutOfWorld = function() {
-	return this.body.position.x < game.getWorld().bounds.min.x
-		|| this.body.position.y < game.getWorld().bounds.min.y
-		|| this.body.position.x > game.getWorld().bounds.max.x
-		|| this.body.position.y > game.getWorld().bounds.max.y;
+	return this.body.position.x < this.game.getWorld().bounds.min.x
+		|| this.body.position.y < this.game.getWorld().bounds.min.y
+		|| this.body.position.x > this.game.getWorld().bounds.max.x
+		|| this.body.position.y > this.game.getWorld().bounds.max.y;
 }
 
 Ball.prototype.radius = 10;

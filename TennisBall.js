@@ -1,4 +1,4 @@
-function TennisBall() {
+function TennisBall(game, x, y) {
 	Ball.apply(this, arguments);
 
 	this.z = 0;
@@ -6,10 +6,20 @@ function TennisBall() {
 
 TennisBall.extends(Ball);
 
-TennisBall.prototype.tick = function() {
+TennisBall.prototype.radius = 11;
 
+TennisBall.prototype.tick = function() {
+	Ball.prototype.tick.apply(this, arguments);
+	this.updateTexture();
 };
 
 TennisBall.prototype.canGrab = function() {
 	return false;
+};
+
+TennisBall.prototype.updateTexture = function() {
+	if(this.game.gameType == 'Tennis')
+		this.body.render.sprite.texture = './img/tennis-ball.png';
+	else
+		this.body.render.sprite.texture = './img/tennis-ball-inactive.png'; //TODO: inactive
 };

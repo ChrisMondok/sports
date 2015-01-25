@@ -7,6 +7,7 @@ Gymnasium.prototype.createSportsObjects = function() {
 	this.goals = this.createGoals();
 	this.createDodgeballs();
 	this.createFlyingDisc();
+	this.createTennisBall();
 };
 
 Gymnasium.prototype.wallThickness = 25;
@@ -115,4 +116,13 @@ Gymnasium.prototype.createFlyingDisc = function() {
 
 Gymnasium.prototype.createTennisNet = function() {
 	new TennisNet(this.game);
+};
+
+Gymnasium.prototype.createTennisBall = function() {
+	var world = this.game.getWorld();
+
+	var centerX = (world.bounds.max.x + world.bounds.min.x)/2;
+	var centerY = (world.bounds.max.y + world.bounds.min.y)/2;
+
+	new TennisBall(this.game, centerX, centerY);
 };

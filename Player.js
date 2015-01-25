@@ -10,6 +10,7 @@ function Player(game, x, y) {
 	this.lastLunged = 0;
 
 	new TennisRacket(game, this.body.position.x, this.body.position.y);
+	new HockeyStick(game, this.body.position.x, this.body.position.y);
 }
 
 Player.extends(Pawn);
@@ -31,8 +32,10 @@ Player.prototype.throwForce = 0.03;
 
 Player.prototype.tick = function(tickEvent) {
 	this.handleInput(tickEvent);
-	if(this.equipment)
+	if(this.equipment) {
+		this.translateEquipmentToSelf();
 		this.equipment.tick(tickEvent);
+	}
 };
 
 Player.prototype.createBody = function(x, y) {
@@ -92,8 +95,12 @@ Player.prototype.handleFlickInput = function(tickEvent) {
 		if(this.canThrow())
 			this.throw(strength, direction);
 		else {
-			if(this.canLunge())
-				this.lunge(strength, direction);
+			if(this.equipment && this.equipment.canSwing())
+				this.equipment.swing(strength, direction);
+			else {
+				if(this.canLunge())
+					this.lunge(strength, direction);
+			}
 		}
 
 		this.flickStart = undefined;
@@ -192,16 +199,17 @@ Player.prototype.equip = function(equipment) {
 Player.prototype.dropEquipment = function() {
 	Matter.World.add(this.game.getWorld(), this.equipment.body);
 
+	this.equipment.holder = null;
+	this.equipment = null;
+};
+
+Player.prototype.translateEquipmentToSelf = function() {
 	var translation = {
 		x: this.body.position.x - this.equipment.body.position.x,
 		y: this.body.position.y - this.equipment.body.position.y
 	};
 
 	Matter.Body.translate(this.equipment.body, translation);
-
-	this.equipment.holder = null;
-
-	this.equipment = null;
 };
 
 Player.prototype.release = function() {

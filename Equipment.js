@@ -16,3 +16,7 @@ Equipment.prototype.destroy = function() {
 Equipment.prototype.canEquip = function() {
 	return false;
 };
+
+Equipment.prototype.canSwing = function() {
+	return false;
+}
