@@ -23,3 +23,8 @@ HockeyPuck.prototype.updateTexture = function() {
 	else
 		this.body.render.sprite.texture = './img/hockeypuck-inactive.png'; //TODO: inactive
 };
+
+HockeyPuck.prototype.reset = function() {
+	this.game.gym.createHockeyPuck();
+	this.destroy();
+}

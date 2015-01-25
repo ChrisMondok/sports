@@ -96,6 +96,10 @@ Game.prototype.onTick = function(tickEvent) {
 
 	if(this.timestamp - this.lastGameChangedAt > this.attentionSpan)
 		this.chooseAGame();
+
+	this.gym.goals.forEach(function(g) {
+		g.tick(tickEvent);
+	});
 };
 
 Game.prototype.afterRender = function(renderEvent) {
