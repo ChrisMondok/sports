@@ -6,7 +6,7 @@ function Game(domNode) {
 	
 	this.gym.createSportsObjects();
 
-	this.scores = [{Total: 0}, {Total: 0}];
+	this.scores = [{Total: 0, Bonus: 0}, {Total: 0, Bonus: 0}];
 
 	this.rounds = 0;
 
