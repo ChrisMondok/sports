@@ -13,12 +13,10 @@ function Player(game, x, y) {
 Player.extends(Pawn);
 
 Player.prototype.walkForce = 0.01;
-Player.prototype.lungeForce = 0.2;
 
-Player.prototype.lungeCooldown = 1000;
-
-Player.prototype.deadZone = 0.2;
 Player.prototype.flickThreshhold = 0.9;
+Player.prototype.lungeForce = 0.2;
+Player.prototype.lungeCooldown = 1000;
 
 Player.prototype.possession = null;
 Player.prototype.equipment = null;
@@ -59,12 +57,7 @@ Player.prototype.handleInput = function(tickEvent) {
 
 Player.prototype.handleMovementInput = function(tickEvent) {
 	var joyX = this.gamepad.getLeftHorizontalAxis();
-	if(Math.abs(joyX) < this.deadZone)
-		joyX = 0;
-
 	var joyY = this.gamepad.getLeftVerticalAxis();
-	if(Math.abs(joyY) < this.deadZone)
-		joyY = 0;
 
 	var x = joyX * this.walkForce;
 	var y = joyY * this.walkForce;
@@ -78,12 +71,7 @@ Player.prototype.handleMovementInput = function(tickEvent) {
 
 Player.prototype.handleFlickInput = function(tickEvent) {
 	var joyX = this.gamepad.getRightHorizontalAxis();
-	if(Math.abs(joyX) < this.deadZone)
-		joyX = 0;
-
 	var joyY = this.gamepad.getRightVerticalAxis();
-	if(Math.abs(joyY) < this.deadZone)
-		joyY = 0;
 
 	if(joyX === 0 && joyY === 0)
 		this.flickStart = tickEvent.timestamp;

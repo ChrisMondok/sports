@@ -1,40 +1,41 @@
 function Gamepad() {
-	this.layout = new GamepadLayout(undefined, undefined);
+	this.leftJoystick = undefined;
+	this.rightJoystick = undefined;
 	this.input = undefined;
 };
 
 Gamepad.prototype.setupComplete = function() {
-	return this.layout.leftJoystick && this.layout.rightJoystick;
-};
-
-Gamepad.prototype.getLeftVerticalAxis = function() {
-	if (!this.layout.leftJoystick) {
-		return undefined;
-	}
-	
-	return this.input.axes[this.layout.leftJoystick.verticalAxis];
+	return this.leftJoystick && this.rightJoystick;
 };
 
 Gamepad.prototype.getLeftHorizontalAxis = function() {
-	if (!this.layout.leftJoystick) {
+	if (!this.leftJoystick) {
 		return undefined;
 	}
 	
-	return this.input.axes[this.layout.leftJoystick.horizontalAxis];
+	return this.leftJoystick.getHorizontalAxis(this.input);
 };
 
-Gamepad.prototype.getRightVerticalAxis = function() {
-	if (!this.layout.rightJoystick) {
+Gamepad.prototype.getLeftVerticalAxis = function() {
+	if (!this.leftJoystick) {
 		return undefined;
 	}
 	
-	return this.input.axes[this.layout.rightJoystick.verticalAxis];
+	return this.leftJoystick.getVerticalAxis(this.input);
 };
 
 Gamepad.prototype.getRightHorizontalAxis = function() {
-	if (!this.layout.rightJoystick) {
+	if (!this.rightJoystick) {
 		return undefined;
 	}
 	
-	return this.input.axes[this.layout.rightJoystick.horizontalAxis];
+	return this.rightJoystick.getHorizontalAxis(this.input);
+};
+
+Gamepad.prototype.getRightVerticalAxis = function() {
+	if (!this.rightJoystick) {
+		return undefined;
+	}
+	
+	return this.rightJoystick.getVerticalAxis(this.input);
 };
