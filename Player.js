@@ -6,6 +6,7 @@ function Player(game, x, y) {
 	this.flickStart = undefined;
 	this.gamepad = undefined;
 	this.lastLunged = 0;
+	this.nextWalkFrame = 0;
 
 	new HockeyStick(game, this.body.position.x, this.body.position.y);
 }
@@ -13,6 +14,9 @@ function Player(game, x, y) {
 Player.extends(Pawn);
 
 Player.prototype.walkForce = 0.01;
+Player.prototype.framesBetweenWalk = 5;
+Player.prototype.framesSinceWalk = 0;
+Player.prototype.minWalkSpeed = Player.prototype.walkForce * 10;
 
 Player.prototype.flickThreshhold = 0.9;
 Player.prototype.lungeForce = 0.2;
@@ -36,7 +40,19 @@ Player.prototype.tick = function(tickEvent) {
 };
 
 Player.prototype.updateTexture = function() {
-	this.body.render.sprite.texture = "./img/player-team" + this.team + "-idle.png";
+	if (this.body.speed >= this.minWalkSpeed) {		
+		if (this.framesSinceWalk > this.framesBetweenWalk) {
+			this.body.render.sprite.texture = "./img/player-team" + this.team + "-walk" + this.nextWalkFrame + ".png";
+			this.nextWalkFrame = 1 - this.nextWalkFrame;
+			this.framesSinceWalk = 0;
+		}
+		else {
+			this.framesSinceWalk++;
+		}
+	}
+	else {
+		this.body.render.sprite.texture = "./img/player-team" + this.team + "-idle.png";
+	}
 };
 
 Player.prototype.addToWorld = function() {

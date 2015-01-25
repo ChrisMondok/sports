@@ -146,7 +146,7 @@ Game.prototype.afterRender = function(renderEvent) {
 	var context = this.engine.render.canvas.getContext("2d");
 	for (playerCounter = 0; playerCounter < this.players.length; playerCounter++) {
 		var player = this.players[playerCounter];
-		if (player.gamepad.setupComplete()){
+		if (player && player.gamepad.setupComplete()){
 			var textColor = player.team ? "darkred" : "blue";
 
 			context.font = "24px sans-serif";
