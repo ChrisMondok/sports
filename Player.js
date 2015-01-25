@@ -1,7 +1,7 @@
-function Player(game) {
+function Player(game, x, y) {
 	Pawn.apply(this, arguments);
 
-	this.body = this.createBody();
+	this.body = this.createBody(x, y);
 
 	Matter.World.add(game.getWorld(), this.body); 
 
@@ -21,9 +21,7 @@ Player.prototype.radius = 25;
 
 Player.prototype.throwForce = 0.03;
 
-Player.prototype.createBody = function() {
-	var x = 200;
-	var y = 200;
+Player.prototype.createBody = function(x, y) {
 	var body = Matter.Bodies.circle(x, y, this.radius, {frictionAir: 0.2});
 	body.pawn = this;
 	body.groupId = Matter.Body.nextGroupId();
@@ -110,7 +108,7 @@ Player.prototype.flick = function() {
 };
 
 Player.prototype.canWalk = function() {
-	if(game.gameType == 'Ultimate Flying Disc' && this.possession)
+	if(this.game.gameType == 'Ultimate Flying Disc' && this.possession)
 		return false;
 
 	return true;

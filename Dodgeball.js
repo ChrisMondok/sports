@@ -4,13 +4,19 @@ function Dodgeball() {
 
 Dodgeball.extends(Ball);
 
-Dodgeball.prototype.bodyOptions = {restitution: 0.2, friction: 1};
+Dodgeball.prototype.hitMinSpeed = 5;
 
-Dodgeball.prototype.tick = function() {
-}
+Dodgeball.prototype.bodyOptions = {restitution: 0.2, friction: 1, render: { sprite: { texture: './img/dodgeball-active.png' }}};
 
 Dodgeball.prototype.canGrab = function() {
 	return this.game.gameType == 'Dodgeball' && this.possessor == null && this.body.speed < 5;
+};
+
+Dodgeball.prototype.tick = function() {
+	if(this.game.gameType == 'Dodgeball')
+		this.body.render.sprite.texture = this.body.speed < this.hitMinSpeed ? './img/dodgeball-active.png' : './img/dodgeball-thrown.png';
+	else
+		this.body.render.sprite.texture = './img/dodgeball-inactive.png';
 };
 
 

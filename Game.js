@@ -4,20 +4,22 @@ function Game(domNode) {
 	this.players = [];
 	this.gym = new Gymnasium(this);
 
+	this.gym.createSportsObjects();
+
 	this.scores = [{}, {}];
 
 	gameTypes.forEach(function(gameType) {
 		this.scores[0][gameType] = 0;
 		this.scores[1][gameType] = 0;
 	}, this);
-}
+};
 
 Game.prototype.score = function(team) {
 	console.info("Team %s got a point in %s", team, this.gameType);
 	this.scores[team][this.gameType]++;
-}
+};
 
-var gameTypes = ['Ultimate Flying Disc', 'Dodgeball'];
+var gameTypes = ['Ultimate Flying Disc', 'Dodgeball', 'Tennis'];
 
 Game.prototype.createEngine = function(domNode) {
 	var gameWidth = 1366;
@@ -29,12 +31,11 @@ Game.prototype.createEngine = function(domNode) {
 	};
 
 	var engine = Matter.Engine.create(domNode, {
-		world: {
-			bounds: gameDimensions
-		},
+		world: { bounds: gameDimensions },
 		render: {
 			bounds: gameDimensions,
 			options: {
+				wireframes: false,
 				width: gameWidth,
 				height: gameHeight,
 				showAngleIndicator: true
@@ -43,6 +44,16 @@ Game.prototype.createEngine = function(domNode) {
 	});
 
 	var canvas = engine.render.canvas;
+
+	Matter.Render.setBackground(engine.render, "url(img/gymnasium.png)");
+
+	//NOTE: this is gross.
+	setTimeout(function() {
+		canvas.style.backgroundImage = "url(img/gymnasium.png)";
+		canvas.style.backgroundSize = gameWidth+"px "+gameHeight+"px";
+	});
+
+	window.c = canvas;
 
 	canvas.addEventListener('click', function() {
 		if (canvas.requestFullscreen) {
@@ -84,7 +95,9 @@ Game.prototype.pollGamepads = function(tickEvent) {
 	{
 		if(gamepads[i]) {
 			if(!this.players[i]) {
-				var player = this.players[i] = new Player(this);
+				var team = i % 2;
+				var x = this.getWorld().bounds.max.x / 4 + team * this.getWorld().bounds.max.x / 2;
+				var player = this.players[i] = new Player(this, x, 300);
 				player.team = i % 2;
 			}
 
