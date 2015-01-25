@@ -48,10 +48,10 @@ Gymnasium.prototype.createWalls = function() {
 	var centerY = (world.bounds.max.y + world.bounds.min.y)/2;
 
 	return [
-		new Wall(this.game, centerX, - 100 + this.wallThickness, gymWidth, 200), //top,
+		new Wall(this.game, centerX, -100 + this.wallThickness, gymWidth, 200), //top,
 		new Wall(this.game, world.bounds.max.x + 100 - this.wallThickness, centerY, 200, gymHeight), //right
 		new Wall(this.game, centerX, world.bounds.max.y + 100 - this.wallThickness, gymWidth, 200), //bottom,
-		new Wall(this.game, - 100 + this.wallThickness, centerY, 200, gymHeight) //left
+		new Wall(this.game, -100 + this.wallThickness, centerY, 200, gymHeight) //left
 	];
 };
 
@@ -78,8 +78,10 @@ Gymnasium.prototype.createDodgeballs = function() {
 	var centerX = (world.bounds.max.x + world.bounds.min.x)/2;
 	var centerY = (world.bounds.max.y + world.bounds.min.y)/2;
 	
-	for (ballCounter = 0; ballCounter < this.totalDodgeBalls; ballCounter++) {
-		new Dodgeball(this.game, (world.bounds.min.x + this.wallThickness + Dodgeball.prototype.radius) * (ballCounter + 1), world.bounds.min.y + this.wallThickness);
+	var radius = 50;
+	
+	for(var direction = 0; direction < Math.PI * 2; direction += Math.PI * 2/5) {
+		new Dodgeball(this.game, centerX + Math.cos(direction) * radius, centerY + Math.sin(direction) * radius);
 	}
 };
 
@@ -87,6 +89,7 @@ Gymnasium.prototype.createFlyingDisc = function() {
 	var world = this.game.getWorld();
 	var gymHeight = world.bounds.max.y - world.bounds.min.y;
 	var centerX = (world.bounds.max.x + world.bounds.min.x) / 2;
+	var centerY = (world.bounds.max.y + world.bounds.min.y) / 2
 	var randomSide = Math.random();
 	
 	if (randomSide < 1/3) {
@@ -96,7 +99,7 @@ Gymnasium.prototype.createFlyingDisc = function() {
 		new FlyingDisc(this.game, centerX, gymHeight - this.wallThickness - FlyingDisc.prototype.radius);
 	}
 	else {
-		new FlyingDisc(this.game, centerX, (gymHeight / 2) + FlyingDisc.prototype.radius);
+		new FlyingDisc(this.game, centerX, centerY);
 	}
 };
 
