@@ -93,8 +93,6 @@ Game.prototype.onTick = function(tickEvent) {
 			composite.pawn.tick(tickEvent);
 	});
 
-	this.pollGamepads(tickEvent);
-
 	if(!this.gameType || (this.timestamp - this.lastGameChangedAt > this.attentionSpan))
 		this.chooseAGame();
 

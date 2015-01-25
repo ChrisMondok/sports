@@ -6,6 +6,7 @@ function Player(game, x, y) {
 	Matter.World.add(game.getWorld(), this.body); 
 
 	this.flickStart = undefined;
+	this.gamepad = undefined;
 	this.lastLunged = 0;
 }
 
@@ -25,6 +26,10 @@ Player.prototype.radius = 25;
 
 Player.prototype.throwForce = 0.03;
 
+Player.prototype.tick = function(tickEvent) {
+	this.handleInput(tickEvent);
+}
+
 Player.prototype.createBody = function(x, y) {
 	var body = Matter.Bodies.circle(x, y, this.radius, {frictionAir: 0.2});
 	body.pawn = this;
@@ -36,17 +41,19 @@ Player.prototype.setCollisionGroup = function(collisionGroupId) {
 	this.body.groupId = collisionGroupId;
 };
 
-Player.prototype.handleInput = function(gamepad, tickEvent) {
-	this.handleMovementInput(gamepad, tickEvent);
-	this.handleFlickInput(gamepad, tickEvent);
+Player.prototype.handleInput = function(tickEvent) {
+	if (this.gamepad.setupComplete()) {
+		this.handleMovementInput(tickEvent);
+		this.handleFlickInput(tickEvent);
+	}
 };
 
-Player.prototype.handleMovementInput = function(gamepad, tickEvent) {
-	var joyX = gamepad.axes[0];
+Player.prototype.handleMovementInput = function(tickEvent) {
+	var joyX = this.gamepad.getLeftHorizontalAxis();
 	if(Math.abs(joyX) < this.deadZone)
 		joyX = 0;
 
-	var joyY = gamepad.axes[1];
+	var joyY = this.gamepad.getLeftVerticalAxis();
 	if(Math.abs(joyY) < this.deadZone)
 		joyY = 0;
 
@@ -60,16 +67,12 @@ Player.prototype.handleMovementInput = function(gamepad, tickEvent) {
 		Matter.Body.rotate(this.body, -this.body.angle + Math.atan2(y, x));
 };
 
-Player.prototype.handleFlickInput = function(gamepad, tickEvent) {
-	//TODO: probably something more intelligent than this
-	var flickXAxis = gamepad.axes.length > 4 ? 3 : 2;
-	var flickYAxis = gamepad.axes.length > 4 ? 4 : 3;
-
-	var joyX = gamepad.axes[flickXAxis];
+Player.prototype.handleFlickInput = function(tickEvent) {
+	var joyX = this.gamepad.getRightHorizontalAxis();
 	if(Math.abs(joyX) < this.deadZone)
 		joyX = 0;
 
-	var joyY = gamepad.axes[flickYAxis];
+	var joyY = this.gamepad.getRightVerticalAxis();
 	if(Math.abs(joyY) < this.deadZone)
 		joyY = 0;
 
