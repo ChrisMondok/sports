@@ -21,7 +21,7 @@ Game.prototype.score = function(team) {
 	this.scores[team][this.gameType]++;
 };
 
-var gameTypes = ['Hockey', 'Ultimate Flying Disc', 'Dodgeball'];
+var gameTypes = ['Hockey', 'Ultimate Flying Disc', 'Dodgeball', 'Kill The Carrier'];
 
 Game.prototype.attentionSpan = 25 * 1000;
 
