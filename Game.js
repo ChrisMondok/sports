@@ -146,7 +146,7 @@ Game.prototype.afterRender = function(renderEvent) {
 	var context = this.engine.render.canvas.getContext("2d");
 	for (playerCounter = 0; playerCounter < this.players.length; playerCounter++) {
 		var player = this.players[playerCounter];
-		if (player.gamepad.setupComplete()){
+		if (player && player.gamepad.setupComplete()){
 			var textColor = player.team ? "darkred" : "blue";
 
 			context.font = "24px sans-serif";
@@ -154,6 +154,14 @@ Game.prototype.afterRender = function(renderEvent) {
 			context.fillText(playerCounter,player.body.position.x,  player.body.position.y);
 			context.textAlign = "center";
 			context.textBaseline = "middle";
+
+			if(player.equipment && player.equipment instanceof Flag) {
+				context.strokeStyle = "lime";
+				context.lineWidth = 4;
+				context.beginPath();
+				context.arc(player.body.position.x, player.body.position.y, 24, 0, 2 * Math.PI, false);
+				context.stroke();
+			}
 		}
 	}
 };
