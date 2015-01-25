@@ -17,6 +17,8 @@ TennisBall.prototype.canGrab = function() {
 	return false;
 };
 
+TennisBall.prototype.bodyOptions = {density: 0.0005};
+
 TennisBall.prototype.updateTexture = function() {
 	if(this.game.gameType == 'Tennis')
 		this.body.render.sprite.texture = './img/tennis-ball.png';

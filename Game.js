@@ -12,6 +12,8 @@ function Game(domNode) {
 		this.scores[0][gameType] = 0;
 		this.scores[1][gameType] = 0;
 	}, this);
+
+	setTimeout(this.chooseAGame.bind(this), 1000);
 };
 
 Game.prototype.score = function(team) {
@@ -92,7 +94,7 @@ Game.prototype.onTick = function(tickEvent) {
 			composite.pawn.tick(tickEvent);
 	});
 
-	if(!this.gameType || (this.timestamp - this.lastGameChangedAt > this.attentionSpan))
+	if(this.timestamp - this.lastGameChangedAt > this.attentionSpan)
 		this.chooseAGame();
 
 	this.gym.tick(tickEvent);
@@ -138,6 +140,8 @@ Game.prototype.chooseAGame = function() {
 	var soundName = this.gameType.replace(/ /g,'').toLowerCase();
 
 	setTimeout(this.playSound.bind(this, soundName), 1000);
+
+	document.getElementById('gametypeDisplay').innerHTML = this.gameType;
 };
 
 Game.prototype.getWorld = function() {
