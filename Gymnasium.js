@@ -8,6 +8,7 @@ Gymnasium.prototype.createSportsObjects = function() {
 	this.createDodgeballs();
 	this.createFlyingDisc();
 	this.createHockeyPuck();
+	this.createFlag();
 };
 
 Gymnasium.prototype.wallThickness = 25;
@@ -78,11 +79,20 @@ Gymnasium.prototype.createDodgeballs = function() {
 	var centerX = (world.bounds.max.x + world.bounds.min.x)/2;
 	var centerY = (world.bounds.max.y + world.bounds.min.y)/2;
 	
-	var radius = 50;
+	var centerCircleRadius = 50;
 	
 	for(var direction = 0; direction < Math.PI * 2; direction += Math.PI * 2/5) {
-		new Dodgeball(this.game, centerX + Math.cos(direction) * radius, centerY + Math.sin(direction) * radius);
+		new Dodgeball(this.game, centerX + Math.cos(direction) * centerCircleRadius, centerY + Math.sin(direction) * centerCircleRadius);
 	}
+};
+
+Gymnasium.prototype.createFlag = function() {
+	var world = this.game.getWorld();
+
+	var centerX = (world.bounds.max.x + world.bounds.min.x)/2;
+	var centerY = (world.bounds.max.y + world.bounds.min.y)/2;
+	
+	new Flag(this.game, centerX, centerY);
 };
 
 Gymnasium.prototype.createFlyingDisc = function() {

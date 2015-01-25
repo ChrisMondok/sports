@@ -17,6 +17,7 @@ Player.prototype.walkForce = 0.01;
 Player.prototype.flickThreshhold = 0.9;
 Player.prototype.lungeForce = 0.2;
 Player.prototype.lungeCooldown = 1000;
+Player.prototype.attackDuration = 500;
 
 Player.prototype.possession = null;
 Player.prototype.equipment = null;
@@ -89,8 +90,11 @@ Player.prototype.handleFlickInput = function(tickEvent) {
 		if(this.canThrow())
 			this.throw(strength, direction);
 		else {
-			if(this.equipment && this.equipment.canSwing())
-				this.equipment.swing(strength, direction);
+			if(this.equipment) {
+				if(this.equipment.canSwing()) {
+					this.equipment.swing(strength, direction);
+				}
+			}
 			else {
 				if(this.canLunge())
 					this.lunge(strength, direction);
@@ -152,6 +156,17 @@ Player.prototype.handleCollision = function(otherThing) {
 
 	if(otherThing instanceof Equipment && this.canAndShouldTakeEquipment(otherThing))
 		this.equip(otherThing);
+
+	if(otherThing instanceof Player && this.isAttacking())
+		this.attack(otherThing);
+};
+
+Player.prototype.isAttacking = function() {
+	return this.game.timestamp - this.lastLunged < this.attackDuration;
+};
+
+Player.prototype.attack = function(otherPlayer) {
+	otherPlayer.dropEquipment();
 };
 
 Player.prototype.canAndShouldGrabBall = function(ball) {
@@ -191,6 +206,9 @@ Player.prototype.equip = function(equipment) {
 };
 
 Player.prototype.dropEquipment = function() {
+	if(!this.equipment)
+		return;
+
 	Matter.World.add(this.game.getWorld(), this.equipment.body);
 
 	this.equipment.holder = null;

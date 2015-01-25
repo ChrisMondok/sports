@@ -19,9 +19,16 @@ function Game(domNode) {
 Game.prototype.score = function(team) {
 	console.info("Team %s got a point in %s", team, this.gameType);
 	this.scores[team][this.gameType]++;
+
+	this.updateScoreboard();
 };
 
-var gameTypes = ['Hockey', 'Ultimate Flying Disc', 'Dodgeball'];
+Game.prototype.updateScoreboard = function() {
+	var str = "Blue: "+ this.getTotalScore(0).toFixed(2) + ", Red: "+ this.getTotalScore(1).toFixed(2);
+	document.getElementById('scoreboard').innerHTML = str;
+};
+
+var gameTypes = ['Hockey', 'Ultimate Flying Disc', 'Dodgeball', 'Kill The Carrier'];
 
 Game.prototype.attentionSpan = 25 * 1000;
 
@@ -80,6 +87,11 @@ Game.prototype.createEngine = function(domNode) {
 	Matter.Events.on(engine, 'afterRender', this.afterRender.bind(this));
 
 	return engine;
+};
+
+Game.prototype.getTotalScore = function(team) {
+	var scores = this.scores[team];
+	return scores["Kill The Carrier"]/30 + scores["Dodgeball"]/20 + scores["Hockey"] + scores["Ultimate Flying Disc"];
 };
 
 Game.prototype.onTick = function(tickEvent) {
