@@ -64,8 +64,8 @@ Gymnasium.prototype.createGoals = function() {
 	var centerY = (world.bounds.max.y + world.bounds.min.y) / 2;
 	
 	return [
-		new Wall(this.game, world.bounds.min.x + this.goalBuffer + this.wallThickness, centerY, this.goalWidth, this.goalHeight),  //left
-		new Wall(this.game, world.bounds.max.x - this.goalBuffer - this.wallThickness, centerY, this.goalWidth, this.goalHeight)  //right
+		new Goal(this.game, world.bounds.min.x + this.goalBuffer + this.wallThickness, centerY, 0),
+		new Goal(this.game, world.bounds.max.x - this.goalBuffer - this.wallThickness, centerY, 1)
 	];
 };
 
