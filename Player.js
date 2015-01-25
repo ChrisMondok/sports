@@ -3,8 +3,6 @@ function Player(game, x, y) {
 
 	this.body = this.createBody(x, y);
 
-	Matter.World.add(game.getWorld(), this.body); 
-
 	this.flickStart = undefined;
 	this.gamepad = undefined;
 	this.lastLunged = 0;
@@ -36,6 +34,10 @@ Player.prototype.tick = function(tickEvent) {
 		this.equipment.tick(tickEvent);
 	}
 };
+
+Player.prototype.addToWorld = function() {
+	Matter.World.add(game.getWorld(), this.body);
+}
 
 Player.prototype.createBody = function(x, y) {
 	var body = Matter.Bodies.circle(x, y, this.radius, {frictionAir: 0.2});

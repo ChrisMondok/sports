@@ -57,6 +57,7 @@ GamepadListener.prototype.handleJoystickConfigClick = function(index, side, mous
 	}
 	
 	if (this.setupPlayer.gamepad.setupComplete()) {
+		this.setupPlayer.addToWorld();
 		this.setupPlayer = undefined;
 	}
 }
