@@ -1,6 +1,7 @@
 function TennisNet(game, x, y) {
 	Pawn.apply(this, arguments);
-	Matter.World.add(game.getWorld(), this.createComposite());
+	this.composite = this.createComposite();
+	Matter.World.add(game.getWorld(), this.composite);
 }
 
 TennisNet.extends(Pawn);
@@ -35,7 +36,6 @@ TennisNet.prototype.createComposite = function() {
 };
 
 TennisNet.prototype.tick = function() {
-	return;
-	if(this.game != 'Tennis')
+	if(this.game.gameType != 'Tennis')
 		this.destroy()
 };

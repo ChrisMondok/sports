@@ -87,6 +87,12 @@ Game.prototype.onTick = function(tickEvent) {
 		if(body.pawn)
 			body.pawn.tick(tickEvent);
 	});
+
+	this.getWorld().composites.forEach(function(composite) {
+		if(composite.pawn)
+			composite.pawn.tick(tickEvent);
+	});
+
 	this.pollGamepads(tickEvent);
 
 	if(!this.gameType || (this.timestamp - this.lastGameChangedAt > this.attentionSpan))
