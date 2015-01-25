@@ -36,6 +36,17 @@
 		<script type="text/javascript" src="Game.js"></script>
 		<script type="text/javascript" src="Joystick.js"></script>
 		<script type="text/javascript" src="TennisNet.js"></script>
+		
+		<script>
+			function displayInstructions() {
+				alert("Welcome to Sports Medley! Sports Medley is a local multi-player game.  In order to play you will need dual stick " +
+					  "gamepads and at least one friend. When a new player joins the game they must configure their gamepad by selecting " +
+					  "the joystick setting which reflects the input given to their gamepad by clicking on the appropriate joystick " +
+					  "animation. Sports Medley is a fast paced sports game where the sports game you are playing changes randomly.  " +
+					  "Your character's movement is controlled with the Left Stick and a contextual action is controlled by the Right " +
+					  "Stick.  Experiment to find out more!");
+			}
+		</script>
 	</head>
 	<body>
 		<audio data-sound="whistle" src="sounds/whistle.ogg"></audio>
@@ -54,6 +65,7 @@
 			Right Stick
 			<div id="rightStickCanvasContainer">
 			</div>
+			<button onclick="displayInstructions()">Instructions</button>
 		</div>
 	</body>
 </html>
