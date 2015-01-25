@@ -18,7 +18,7 @@ HockeyPuck.prototype.canGrab = function() {
 HockeyPuck.prototype.bodyOptions = {density: 0.0005};
 
 HockeyPuck.prototype.updateTexture = function() {
-	if(this.game.gameType == 'Hockey')
+	if(this.game.gameType == 'Hockey' || this.game.gameType == 'Bonus')
 		this.body.render.sprite.texture = './img/hockeypuck.png';
 	else
 		this.body.render.sprite.texture = './img/hockeypuck-inactive.png'; //TODO: inactive

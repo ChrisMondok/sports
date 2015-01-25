@@ -144,7 +144,7 @@ Player.prototype.flick = function() {
 };
 
 Player.prototype.canWalk = function() {
-	if(this.game.gameType == 'Ultimate Flying Disc' && this.possession)
+	if(this.possession && this.possession.bodyB.pawn instanceof FlyingDisc)
 		return false;
 
 	return true;

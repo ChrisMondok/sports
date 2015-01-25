@@ -28,7 +28,7 @@ Flag.prototype.tick = function(tickEvent) {
 
 	if(this.holder) {
 		this.lastHeld = tickEvent.timestamp;
-		if(this.game.gameType == 'Kill The Carrier') {
+		if(this.game.gameType == 'Kill The Carrier' || this.game.gameType == 'Bonus') {
 			if(tickEvent.timestamp - this.lastPoint > this.pointsPerSecond * 1000)
 				this.score(tickEvent);
 		}
@@ -38,16 +38,16 @@ Flag.prototype.tick = function(tickEvent) {
 };
 
 Flag.prototype.score = function(tickEvent) {
-	this.game.score(this.holder.team);
+	this.game.score(this.holder.team, 1/30);
 	this.lastPoint = tickEvent.timestamp;
 };
 
 Flag.prototype.canEquip = function() {
-	return this.game.gameType == 'Kill The Carrier' && (this.game.timestamp - this.lastHeld) > this.pickUpCooldown;
+	return (this.game.gameType == 'Kill The Carrier' || this.game.gameType == 'Bonus') && (this.game.timestamp - this.lastHeld) > this.pickUpCooldown;
 };
 
 Flag.prototype.updateTexture = function() {
-	if(this.game.gameType == 'Kill The Carrier')
+	if(this.game.gameType == 'Kill The Carrier' || this.game.gameType == 'Bonus')
 		this.body.render.sprite.texture = './img/flag-active.png';
 	else
 		this.body.render.sprite.texture = './img/flag-inactive.png';

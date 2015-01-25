@@ -20,19 +20,19 @@ TennisRacket.prototype.createBody = function(x, y) {
 TennisRacket.prototype.tick = function() {
 	this.updateTexture();
 
-	if(this.holder && this.game.gameType != 'Tennis')
+	if(this.holder && (this.game.gameType != 'Tennis' && this.game.gameType != 'Bonus'))
 		this.holder.dropEquipment();
 }
 
 TennisRacket.prototype.updateTexture = function() {
-	if(this.game.gameType == 'Tennis')
+	if(this.game.gameType == 'Tennis' || this.game.gameType == 'Bonus')
 		this.body.render.sprite.texture = './img/tennis-racket.png';
 	else
 		this.body.render.sprite.texture = './img/tennis-racket-inactive.png'; //todo: inactive
 };
 
 TennisRacket.prototype.canEquip = function() {
-	return this.game.gameType == 'Tennis';
+	return this.game.gameType == 'Tennis' || this.game.gameType == 'Bonus';
 };
 
 TennisRacket.prototype.canSwing = function() {

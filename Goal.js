@@ -37,7 +37,7 @@ Goal.prototype.tick = function(tickEvent) {
 	else
 		xCenter += this.width/2;
 
-	if(this.game.gameType == "Hockey") {
+	if(this.game.gameType == "Hockey" || this.game.gameType == "Bonus") {
 		game.getWorld().bodies
 			.filter(function(b) { return b.pawn && b.pawn instanceof HockeyPuck; })
 			.filter(function(puckBody) {
@@ -46,7 +46,7 @@ Goal.prototype.tick = function(tickEvent) {
 			.forEach(function(puckBodyInGoal) {
 				this.game.playSound("buzzer");
 				puckBodyInGoal.pawn.reset();
-				this.game.score(this.team ? 0 : 1);
+				this.game.score(this.team ? 0 : 1, 1);
 			}, this);
 	}
 };

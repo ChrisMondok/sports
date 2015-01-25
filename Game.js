@@ -6,7 +6,9 @@ function Game(domNode) {
 	
 	this.gym.createSportsObjects();
 
-	this.scores = [{}, {}];
+	this.scores = [{Total: 0}, {Total: 0}];
+
+	this.rounds = 0;
 
 	gameTypes.forEach(function(gameType) {
 		this.scores[0][gameType] = 0;
@@ -16,15 +18,16 @@ function Game(domNode) {
 	setTimeout(this.chooseAGame.bind(this), 1000);
 };
 
-Game.prototype.score = function(team) {
+Game.prototype.score = function(team, value) {
 	console.info("Team %s got a point in %s", team, this.gameType);
 	this.scores[team][this.gameType]++;
+	this.scores[team].Total += value;
 
 	this.updateScoreboard();
 };
 
 Game.prototype.updateScoreboard = function() {
-	var str = "Blue: "+ this.getTotalScore(0)+ ", Red: "+this.getTotalScore(1);
+	var str = "Blue: "+ this.scores[0].Total+ ", Red: "+this.scores[1].Total;
 	document.getElementById('scoreboard').innerHTML = str;
 };
 
@@ -89,11 +92,6 @@ Game.prototype.createEngine = function(domNode) {
 	return engine;
 };
 
-Game.prototype.getTotalScore = function(team) {
-	var scores = this.scores[team];
-	return scores["Kill The Carrier"]/30 + scores["Dodgeball"]/20 + scores["Hockey"] + scores["Ultimate Flying Disc"];
-};
-
 Game.prototype.onTick = function(tickEvent) {
 	this.timestamp = tickEvent.timestamp;
 	this.getWorld().bodies.forEach(function(body) {
@@ -106,12 +104,40 @@ Game.prototype.onTick = function(tickEvent) {
 			composite.pawn.tick(tickEvent);
 	});
 
-	if(this.timestamp - this.lastGameChangedAt > this.attentionSpan)
-		this.chooseAGame();
+	if(this.timestamp - this.lastGameChangedAt > this.attentionSpan) {
+		if(this.rounds >= 10)
+			this.endGame();
+		else
+			this.chooseAGame();
+	}
 
 	this.gym.goals.forEach(function(g) {
 		g.tick(tickEvent);
 	});
+};
+
+Game.prototype.endGame = function() {
+	var self = this;
+
+	var str = ["Game Over!", printIndividualScore(0), printIndividualScore(1)].join('\n');
+
+	alert(str);
+
+	window.location.reload();
+
+	function printIndividualScore(team) {
+		var str = team ? "Red" : "Blue";
+		str += " team";
+
+		for(var game in self.scores[team]) {
+			if(game != "Total")
+				str += "\n" + game + ": "+self.scores[team][game];
+		}
+
+		str += "\n Total: "+self.scores[team].Total
+
+		return str;
+	}
 };
 
 Game.prototype.afterRender = function(renderEvent) {
@@ -158,14 +184,21 @@ Game.prototype.onCollisionActive = function(collisionEvent) {
 };
 
 Game.prototype.chooseAGame = function() {
+	if(this.scores[0].Total || this.scores[1].Total)
+		this.rounds++;
+
 	this.lastGameChangedAt = this.timestamp;
 
-	var i = Math.floor(Math.random() * gameTypes.length);
 
 	if(this.gameType)
 		this.playSound('whistle');
 
-	this.gameType = gameTypes[i];
+	if(this.rounds < 10) {
+		var i = Math.floor(Math.random() * gameTypes.length);
+		this.gameType = gameTypes[i];
+	}
+	else
+		this.gameType = 'Bonus';
 
 	var soundName = this.gameType.replace(/ /g,'').toLowerCase();
 

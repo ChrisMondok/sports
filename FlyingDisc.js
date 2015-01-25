@@ -9,7 +9,7 @@ FlyingDisc.prototype.bodyOptions = {restitution: 0};
 FlyingDisc.prototype.landedSpeed = 5;
 
 FlyingDisc.prototype.canGrab = function() {
-	return this.game.gameType == 'Ultimate Flying Disc' && !this.possessor;
+	return (this.game.gameType == 'Ultimate Flying Disc' || this.game.gameType == 'Bonus') && !this.possessor;
 };
 
 FlyingDisc.prototype.tick = function(tickEvent) {
@@ -17,10 +17,10 @@ FlyingDisc.prototype.tick = function(tickEvent) {
 
 	this.body.frictionAir = (this.body.speed > this.landedSpeed ? 0.005 : 0.1);
 
-	if(this.game.gameType == 'Ultimate Flying Disc' && this.possessor) {
+	if((this.game.gameType == 'Ultimate Flying Disc' || this.game.gameType == 'Bonus') && this.possessor) {
 		var endZone = this.game.gym.getEndZone(this);
 		if(endZone !== null && endZone !== this.possessor.team) {
-			this.game.score(this.possessor.team);
+			this.game.score(this.possessor.team, 1);
 			this.game.playSound('cheer-short');
 			this.reset();
 		}
@@ -30,7 +30,7 @@ FlyingDisc.prototype.tick = function(tickEvent) {
 };
 
 FlyingDisc.prototype.updateTexture = function() {
-	if(this.game.gameType == 'Ultimate Flying Disc')
+	if(this.game.gameType == 'Ultimate Flying Disc' || this.game.gameType == 'Bonus')
 		this.body.render.sprite.texture = this.body.speed < this.landedSpeed ? './img/flyingdisc-active.png' : './img/flyingdisc-thrown.png';
 	else
 		this.body.render.sprite.texture = './img/flyingdisc-inactive.png';

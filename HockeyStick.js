@@ -20,19 +20,19 @@ HockeyStick.prototype.createBody = function(x, y) {
 HockeyStick.prototype.tick = function() {
 	this.updateTexture();
 
-	if(this.holder && this.game.gameType != 'Hockey')
+	if(this.holder && (this.game.gameType != 'Hockey' && this.game.gameType != 'Bonus'))
 		this.holder.dropEquipment();
 }
 
 HockeyStick.prototype.updateTexture = function() {
-	if(this.game.gameType == 'Hockey')
+	if(this.game.gameType == 'Hockey' || this.game.gameType == 'Bonus')
 		this.body.render.sprite.texture = './img/hockey-stick.png';
 	else
 		this.body.render.sprite.texture = './img/hockey-stick-inactive.png'; //todo: inactive
 };
 
 HockeyStick.prototype.canEquip = function() {
-	return this.game.gameType == 'Hockey';
+	return this.game.gameType == 'Hockey' || this.game.gameType == 'Bonus';
 };
 
 HockeyStick.prototype.canSwing = function() {

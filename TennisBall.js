@@ -20,7 +20,7 @@ TennisBall.prototype.canGrab = function() {
 TennisBall.prototype.bodyOptions = {density: 0.0005};
 
 TennisBall.prototype.updateTexture = function() {
-	if(this.game.gameType == 'Tennis')
+	if(this.game.gameType == 'Tennis' || this.game.gameType == 'Bonus')
 		this.body.render.sprite.texture = './img/tennis-ball.png';
 	else
 		this.body.render.sprite.texture = './img/tennis-ball-inactive.png'; //TODO: inactive
