@@ -6,7 +6,7 @@ function Game(domNode) {
 	
 	this.gym.createSportsObjects();
 
-	this.scores = [{Total: 0}, {Total: 0}];
+	this.scores = [{Total: 0, Bonus: 0}, {Total: 0, Bonus: 0}];
 
 	this.rounds = 0;
 
@@ -154,6 +154,14 @@ Game.prototype.afterRender = function(renderEvent) {
 			context.fillText(playerCounter,player.body.position.x,  player.body.position.y);
 			context.textAlign = "center";
 			context.textBaseline = "middle";
+
+			if(player.equipment && player.equipment instanceof Flag) {
+				context.strokeStyle = "lime";
+				context.lineWidth = 4;
+				context.beginPath();
+				context.arc(player.body.position.x, player.body.position.y, 24, 0, 2 * Math.PI, false);
+				context.stroke();
+			}
 		}
 	}
 };
