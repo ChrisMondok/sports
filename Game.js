@@ -96,8 +96,6 @@ Game.prototype.onTick = function(tickEvent) {
 
 	if(this.timestamp - this.lastGameChangedAt > this.attentionSpan)
 		this.chooseAGame();
-
-	this.gym.tick(tickEvent);
 };
 
 Game.prototype.pollGamepads = function(tickEvent) {

@@ -9,7 +9,6 @@ function Player(game, x, y) {
 	this.gamepad = undefined;
 	this.lastLunged = 0;
 
-	new TennisRacket(game, this.body.position.x, this.body.position.y);
 	new HockeyStick(game, this.body.position.x, this.body.position.y);
 }
 

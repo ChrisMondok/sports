@@ -7,7 +7,7 @@ Gymnasium.prototype.createSportsObjects = function() {
 	this.goals = this.createGoals();
 	this.createDodgeballs();
 	this.createFlyingDisc();
-	this.createTennisBall();
+	this.createHockeyPuck();
 };
 
 Gymnasium.prototype.wallThickness = 25;
@@ -20,7 +20,6 @@ Gymnasium.prototype.totalDodgeBalls = 5;
 Gymnasium.prototype.dodgeBallSize = 7;
 
 Gymnasium.prototype.hockeyPuckSize = 5;
-Gymnasium.prototype.tennisBallSize = 5;
 Gymnasium.prototype.frisbeeSize = 7;
 
 Gymnasium.prototype.getEndZone = function(pawn) {
@@ -54,19 +53,6 @@ Gymnasium.prototype.createWalls = function() {
 		new Wall(this.game, centerX, world.bounds.max.y + 100 - this.wallThickness, gymWidth, 200), //bottom,
 		new Wall(this.game, - 100 + this.wallThickness, centerY, 200, gymHeight) //left
 	];
-};
-
-Gymnasium.prototype.tick = function(tickEvent) {
-	if(this.game.gameType == 'Tennis') {
-		var nets = this.game.getWorld().composites.filter(function(b) {
-			return b.pawn && b.pawn instanceof TennisNet;
-		});
-
-		if(nets.length == 0) {
-			console.log("NO NETS! MAKE ONE");
-			this.createTennisNet();
-		}
-	}
 };
 
 Gymnasium.prototype.createGoals = function() {
@@ -114,15 +100,12 @@ Gymnasium.prototype.createFlyingDisc = function() {
 	}
 };
 
-Gymnasium.prototype.createTennisNet = function() {
-	new TennisNet(this.game);
-};
+Gymnasium.prototype.createHockeyPuck = function() {
+	var w = this.game.getWorld().bounds.max.x;
+	var h = this.game.getWorld().bounds.max.y;
 
-Gymnasium.prototype.createTennisBall = function() {
-	var world = this.game.getWorld();
+	var x = w/4 + w/2 * Math.round(Math.random());
+	var y = h/4 + h/2 * Math.round(Math.random());
 
-	var centerX = (world.bounds.max.x + world.bounds.min.x)/2;
-	var centerY = (world.bounds.max.y + world.bounds.min.y)/2;
-
-	new TennisBall(this.game, centerX, centerY);
+	new HockeyPuck(this.game, x, y);
 };
