@@ -8,8 +8,8 @@ function TennisRacket(game, x, y) {
 
 TennisRacket.extends(Equipment);
 
-TennisRacket.prototype.swingRange = 50;
-TennisRacket.prototype.swingForce = 0.1;
+TennisRacket.prototype.swingRange = 100;
+TennisRacket.prototype.swingForce = 0.02;
 
 TennisRacket.prototype.createBody = function(x, y) {
 	var body = Matter.Bodies.rectangle(x, y, 20, 36, { frictionAir: 0.05, angle: Math.random() * 2 * Math.PI });
@@ -40,19 +40,20 @@ TennisRacket.prototype.canSwing = function() {
 };
 
 TennisRacket.prototype.swing = function(strength, direction) {
-	var balls = this.game.getWorld().bodies.filter(function(body) {
-		return body.pawn && body.pawn instanceof Ball;
-	});
+	var bodiesInRange = this.game.getWorld().bodies.filter(function(body) {
+		var dx = body.position.x - this.body.position.x;
+		var dy = body.position.y - this.body.position.y;
 
-	var ballsInRange = balls.filter(function(ball) {
-		var dx = ball.position.x - this.body.position.x;
-		var dy = ball.position.x - this.body.position.y;
-
-		return Math.sqrt(dx * dx + dy * dy) < this.swingRange;
+		var dist = Math.sqrt(dx * dx + dy * dy);
+		return dist < this.swingRange;
 	}, this);
 
-	balls.forEach(function(ball) {
-		var force = 
+	bodiesInRange.forEach(function(ball) {
+		var force = {
+			x: strength * this.swingForce * Math.cos(direction),
+			y: strength * this.swingForce * Math.sin(direction)
+		};
+		
 		Matter.Body.applyForce(ball, ball.position, force);
-	});
+	}, this);
 };
