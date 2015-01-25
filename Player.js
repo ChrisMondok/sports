@@ -6,11 +6,15 @@ function Player(game, x, y) {
 	Matter.World.add(game.getWorld(), this.body); 
 
 	this.flickStart = undefined;
+	this.lastLunged = 0;
 }
 
 Player.extends(Pawn);
 
 Player.prototype.walkForce = 0.01;
+Player.prototype.lungeForce = 0.2;
+
+Player.prototype.lungeCooldown = 1000;
 
 Player.prototype.deadZone = 0.2;
 Player.prototype.flickThreshhold = 0.9;
@@ -79,6 +83,10 @@ Player.prototype.handleFlickInput = function(gamepad, tickEvent) {
 
 		if(this.canThrow())
 			this.throw(strength, direction);
+		else {
+			if(this.canLunge())
+				this.lunge(strength, direction);
+		}
 
 		this.flickStart = undefined;
 	}
@@ -94,6 +102,21 @@ Player.prototype.canThrow = function() {
 	}
 
 	return true;
+};
+
+Player.prototype.canLunge = function() {
+	return !this.possession && (this.game.timestamp - this.lastLunged) > this.lungeCooldown;
+};
+
+Player.prototype.lunge = function(strength, direction) {
+	var force = {
+		x: Math.cos(direction) * strength * this.lungeForce,
+		y: Math.sin(direction) * strength * this.lungeForce
+	};
+
+	this.lastLunged = this.game.timestamp;
+
+	Matter.Body.applyForce(this.body, this.body.position, force);
 };
 
 Player.prototype.isOnOwnHalfOfField = function() {

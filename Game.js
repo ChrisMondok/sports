@@ -81,6 +81,7 @@ Game.prototype.createEngine = function(domNode) {
 };
 
 Game.prototype.onTick = function(tickEvent) {
+	this.timestamp = tickEvent.timestamp;
 	this.getWorld().bodies.forEach(function(body) {
 		if(body.pawn)
 			body.pawn.tick(tickEvent);
