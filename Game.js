@@ -22,11 +22,13 @@ Game.prototype.reset = function() {
 }
 
 Game.prototype.score = function(team, value) {
-	console.info("Team %s got a point in %s", team, this.gameType);
-	this.scores[team][this.gameType]++;
-	this.scores[team].Total += value;
+	if(this.players.length > 1 && this.gamepadListener && !this.gamepadListener.setupPlayer) {
+		console.info("Team %s got a point in %s", team, this.gameType);
+		this.scores[team][this.gameType]++;
+		this.scores[team].Total += value;
 
-	this.updateScoreboard();
+		this.updateScoreboard();
+	}
 };
 
 Game.prototype.updateScoreboard = function() {
@@ -168,24 +170,6 @@ Game.prototype.afterRender = function(renderEvent) {
 	}
 };
 
-Game.prototype.pollGamepads = function(tickEvent) {
-	var gamepads = navigator.getGamepads();
-	
-	for(var i = 0; i < gamepads.length; i++)
-	{
-		if(gamepads[i]) {
-			if(!this.players[i]) {
-				var team = i % 2;
-				var x = this.getWorld().bounds.max.x / 4 + team * this.getWorld().bounds.max.x / 2;
-				var player = this.players[i] = new Player(this, x, 300);
-				player.team = i % 2;
-			}
-
-			this.players[i].handleInput(gamepads[i], tickEvent);
-		}
-	}
-};
-
 Game.prototype.onCollisionActive = function(collisionEvent) {
 	collisionEvent.pairs.filter(function(pair) {
 		return pair.bodyA.pawn && pair.bodyB.pawn;
@@ -196,14 +180,6 @@ Game.prototype.onCollisionActive = function(collisionEvent) {
 };
 
 Game.prototype.chooseAGame = function() {
-	if(this.players.length > 1)
-		this.rounds++;
-
-	this.lastGameChangedAt = this.timestamp;
-
-	if(this.gameType)
-		this.playSound('whistle');
-
 	if(this.rounds < 10) {
 		var i = Math.floor(Math.random() * gameTypes.length);
 		this.gameType = gameTypes[i];
@@ -211,10 +187,17 @@ Game.prototype.chooseAGame = function() {
 	else
 		this.gameType = 'Bonus';
 
-	var soundName = this.gameType.replace(/ /g,'').toLowerCase();
-	setTimeout(this.playSound.bind(this, soundName), 1000);
-
+	this.lastGameChangedAt = this.timestamp;
 	document.getElementById('gametypeDisplay').innerHTML = (this.rounds + 1) + " - " + this.gameType;
+	
+	if(this.players.length > 1 && this.gamepadListener && !this.gamepadListener.setupPlayer) {
+		this.playSound('whistle');
+		
+		var soundName = this.gameType.replace(/ /g,'').toLowerCase();
+		setTimeout(this.playSound.bind(this, soundName), 1000);
+		
+		this.rounds++;
+	}
 };
 
 Game.prototype.getWorld = function() {

@@ -27,7 +27,6 @@ function GamepadListener(game) {
 		var container = document.getElementById("rightStickCanvasContainer");
 		var canvas = this.createJoystickCanvas(container, canvasCounter, "right");
 		this.rightSetupCanvases[canvasCounter] = canvas;
-		
 	}
 	
 	Matter.Events.on(game.engine, 'tick', this.onTick.bind(this));
