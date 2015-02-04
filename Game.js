@@ -1,14 +1,17 @@
 function Game(domNode) {
 	this.engine = this.createEngine(domNode);
-	
 	this.players = [];
-	this.gym = new Gymnasium(this);
+	this.changeGameTimer = null;
 	
+	this.gym = new Gymnasium(this);
 	this.gym.createSportsObjects();
+	
+	this.reset();
+};
 
-	this.scores = [{Total: 0, Bonus: 0}, {Total: 0, Bonus: 0}];
-
+Game.prototype.reset = function() {
 	this.rounds = 0;
+	this.scores = [{Total: 0, Bonus: 0}, {Total: 0, Bonus: 0}];
 
 	gameTypes.forEach(function(gameType) {
 		this.scores[0][gameType] = 0;
@@ -16,7 +19,7 @@ function Game(domNode) {
 	}, this);
 
 	setTimeout(this.chooseAGame.bind(this), 1000);
-};
+}
 
 Game.prototype.score = function(team, value) {
 	console.info("Team %s got a point in %s", team, this.gameType);
@@ -105,7 +108,7 @@ Game.prototype.onTick = function(tickEvent) {
 	});
 
 	if(this.timestamp - this.lastGameChangedAt > this.attentionSpan) {
-		if(this.rounds >= 10)
+		if(this.rounds >= 2)
 			this.endGame();
 		else
 			this.chooseAGame();
@@ -118,14 +121,13 @@ Game.prototype.onTick = function(tickEvent) {
 
 Game.prototype.endGame = function() {
 	var self = this;
-
 	this.playSound("gameover");
 
 	var str = ["Game Over!", printIndividualScore(0), printIndividualScore(1)].join('\n');
 
 	alert(str);
 
-	window.location.reload();
+	this.reset();
 
 	function printIndividualScore(team) {
 		var str = team ? "Red" : "Blue";
@@ -133,10 +135,10 @@ Game.prototype.endGame = function() {
 
 		for(var game in self.scores[team]) {
 			if(game != "Total")
-				str += "\n" + game + ": "+self.scores[team][game];
+				str += "\n" + game + ": " + self.scores[team][game];
 		}
 
-		str += "\n Total: "+self.scores[team].Total
+		str += "\n Total: " + self.scores[team].Total
 
 		return str;
 	}
@@ -194,11 +196,10 @@ Game.prototype.onCollisionActive = function(collisionEvent) {
 };
 
 Game.prototype.chooseAGame = function() {
-	if(this.scores[0].Total || this.scores[1].Total)
+	if(this.players.length > 1)
 		this.rounds++;
 
 	this.lastGameChangedAt = this.timestamp;
-
 
 	if(this.gameType)
 		this.playSound('whistle');
@@ -211,10 +212,9 @@ Game.prototype.chooseAGame = function() {
 		this.gameType = 'Bonus';
 
 	var soundName = this.gameType.replace(/ /g,'').toLowerCase();
-
 	setTimeout(this.playSound.bind(this, soundName), 1000);
 
-	document.getElementById('gametypeDisplay').innerHTML = this.gameType;
+	document.getElementById('gametypeDisplay').innerHTML = (this.rounds + 1) + " - " + this.gameType;
 };
 
 Game.prototype.getWorld = function() {
