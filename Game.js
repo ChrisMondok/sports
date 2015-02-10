@@ -110,7 +110,7 @@ Game.prototype.onTick = function(tickEvent) {
 	});
 
 	if(this.timestamp - this.lastGameChangedAt > this.attentionSpan) {
-		if(this.rounds >= 2)
+		if(this.rounds >= 10)
 			this.endGame();
 		else
 			this.chooseAGame();
