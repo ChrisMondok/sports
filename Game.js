@@ -7,18 +7,20 @@ function Game(domNode) {
 	this.gym.createSportsObjects();
 	
 	this.reset();
+	setTimeout(this.chooseAGame.bind(this), 1000);
 };
 
 Game.prototype.reset = function() {
 	this.rounds = 0;
 	this.scores = [{Total: 0, Bonus: 0}, {Total: 0, Bonus: 0}];
+	this.timestamp = this.lastGameChangedAt = 0;
 
 	gameTypes.forEach(function(gameType) {
 		this.scores[0][gameType] = 0;
 		this.scores[1][gameType] = 0;
 	}, this);
 
-	setTimeout(this.chooseAGame.bind(this), 1000);
+	this.updateScoreboard();
 }
 
 Game.prototype.score = function(team, value) {
@@ -110,7 +112,7 @@ Game.prototype.onTick = function(tickEvent) {
 	});
 
 	if(this.timestamp - this.lastGameChangedAt > this.attentionSpan) {
-		if(this.rounds >= 10)
+		if(this.rounds >= 11)
 			this.endGame();
 		else
 			this.chooseAGame();
